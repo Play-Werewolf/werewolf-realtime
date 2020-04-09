@@ -1,6 +1,6 @@
 namespace WerewolfServer.Game
 {
-    public class Healer : Character
+    public class Healer : SingleTargetCharacter
     {
         public Healer(string name) : base(name) {}
 

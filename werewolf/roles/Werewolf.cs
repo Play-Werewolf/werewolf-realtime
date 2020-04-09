@@ -2,7 +2,7 @@ using System;
 
 namespace WerewolfServer.Game
 {
-    public class Werewolf : Character
+    public class Werewolf : SingleTargetCharacter
     {
         public override Alignment Alignment => Alignment.Evil;
 

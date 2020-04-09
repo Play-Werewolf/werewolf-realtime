@@ -72,6 +72,10 @@ namespace WerewolfServer.Game
             this.Night.Action = action;
         }
         public virtual void PreAction() {}
+        public virtual bool ShouldAct()
+        {
+            return Night.Action != null && Night.Action.ShouldAct;
+        }
         public virtual void DoAction() {}
         public virtual void PostAction() {}
         public virtual void OnNightEnd() {}

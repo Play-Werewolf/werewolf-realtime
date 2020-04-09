@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace WerewolfServer.Game
 {
-    public class AlphaWerewolf : Character
+    public class AlphaWerewolf : SingleTargetCharacter
     {
         Player Attacker;
 
