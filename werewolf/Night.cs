@@ -126,7 +126,7 @@ namespace WerewolfServer.Game
 
             foreach (var d in Defenses)
             {
-                d.Defender.Character.OnDefense(player);
+                d.Defender?.Character.OnDefense(player);
             }
 
             Power defense = Defenses.DefaultIfEmpty().Max(d => d.Power);
@@ -139,9 +139,9 @@ namespace WerewolfServer.Game
                 player.Character.Die();
                 
                 foreach (var a in Attacks)
-                    a.Attacker.Character.OnAttackSuccess(player);
+                    a.Attacker?.Character.OnAttackSuccess(player);
                 foreach (var d in Defenses)
-                    d.Defender.Character.OnDefenseFailed(player);
+                    d.Defender?.Character.OnDefenseFailed(player);
             }
             else
             {
@@ -149,9 +149,9 @@ namespace WerewolfServer.Game
                     player.Character.SendMessage("You were attacked but " + d.Description);
 
                 foreach (var a in Attacks)
-                    a.Attacker.Character.OnAttackFailed(player);
+                    a.Attacker?.Character.OnAttackFailed(player);
                 foreach (var d in Defenses)
-                    d.Defender.Character.OnDefenseSuccess(player);
+                    d.Defender?.Character.OnDefenseSuccess(player);
             }
         }
     }

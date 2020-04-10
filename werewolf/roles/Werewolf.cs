@@ -9,7 +9,7 @@ namespace WerewolfServer.Game
 
         private void PromoteToAlpha()
         {
-            SendMessage("You have been promoted to an Alpha Werewolf"); // TODO: Maybe we don't want to show this exactly here
+            SendMessage("You have been promoted to Alpha Werewolf");
             Player.ChangeRole(new AlphaWerewolf());
             // This is the end of life of this object. Do not continue modifying it.
         }
