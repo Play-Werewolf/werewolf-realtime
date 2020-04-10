@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using Xunit;
 
 using WerewolfServer.Game;
@@ -10,17 +8,17 @@ namespace werewolf.tests
     {
         GameRoom game;
         Character c;
-        Werewolf ww;
-        AlphaWerewolf aww;
-        Healer h;
+        Character ww;
+        Character aww;
+        Character h;
         
         private void Init()
         {
             game = new GameRoom();
-            c = new Villager("c");
-            ww = new Werewolf("ww");
-            aww = new AlphaWerewolf("aww");
-            h = new Healer("h");
+            c = new Villager();
+            ww = new Werewolf();
+            aww = new AlphaWerewolf();
+            h = new Healer();
 
             game.Reset();
             game.AddPlayer(new Player(c));

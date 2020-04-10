@@ -2,7 +2,6 @@ namespace WerewolfServer.Game
 {
     public abstract class Character
     {
-        public GameRoom Game {get;set;}
         public Player Player {get;set;}
         public static readonly int NotDead = -1;
         
@@ -10,8 +9,6 @@ namespace WerewolfServer.Game
         
         public bool Alive => DeathNight == NotDead;
         
-        public string Name {get;set;}
-
         public virtual Alignment Alignment => Alignment.Good;
 
         public Night Night {get;set;}
@@ -22,16 +19,30 @@ namespace WerewolfServer.Game
         public abstract FortuneTellerResult FortuneTellerResult {get;}
 
 
-        public Character(string name)
+        public Character()
         {
-            Name = name;
             Night = new Night(this);
+        }
+
+
+    #if(DEBUG)
+        public string _name;
+        public Character WithName(string name)
+        {
+            _name = name;
+            return this;
         }
 
         public override string ToString()
         {
-            return string.Format("{0} {1} ({2})", GetType().Name, Name, Alive ? "alive" : "dead");
+            return string.Format("{0} {1} ({2})", GetType().Name, _name, Alive ? "alive" : "dead");
         }
+    #else
+        public override string ToString()
+        {
+            return string.Format("{0} ({1})", GetType().Name, Alive ? "alive" : "dead");
+        }
+    #endif
 
         public void SendMessage(Message message)
         {
@@ -45,7 +56,7 @@ namespace WerewolfServer.Game
 
         public virtual void Die()
         {
-            DeathNight = Game.Night;
+            DeathNight = Player.Game.CurrentNight;
             SendMessage("You have died!");
         }
 
@@ -79,6 +90,7 @@ namespace WerewolfServer.Game
         // Respond to visits here (e.g. veteran)
         // Refrain from making visits here
         public virtual void PostAction() {}
+        public virtual void OnDeath() {}
         public virtual void OnNightEnd() {}
 
         public virtual void OnAttackSuccess(Character p) {}

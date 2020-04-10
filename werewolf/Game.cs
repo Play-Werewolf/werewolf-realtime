@@ -7,7 +7,7 @@ namespace WerewolfServer.Game
     {
         public Random Random = new Random();
         
-        public int Night {get;set;}
+        public int CurrentNight {get;set;}
 
         public List<Player> Players {get;set;} = new List<Player>();
 
@@ -19,7 +19,7 @@ namespace WerewolfServer.Game
         public void Reset()
         {
             Players.Clear();
-            Night = 0;
+            CurrentNight = 0;
         }
 
         public void AddPlayer(Player p)
@@ -27,7 +27,7 @@ namespace WerewolfServer.Game
             if (p == null) {
                 throw new InvalidOperationException("Cannot insert null player to a gameroom");
             }
-            p.Character.Game = this;
+            p.Game = this;
             this.Players.Add(p);
         }
 
@@ -59,6 +59,10 @@ namespace WerewolfServer.Game
 
             foreach (var p in Players.Prioritized())
                 p.Character.Night.CalculateResults();
+
+            foreach (var p in Players.Prioritized())
+                if (p.Character.DeathNight == CurrentNight)
+                    p.Character.OnDeath();
 
             foreach (var p in Players.Prioritized())
                 p.Character.OnNightEnd();

@@ -2,7 +2,6 @@ namespace WerewolfServer.Game
 {
     public class Healer : SingleTargetCharacter
     {
-        public Healer(string name) : base(name) {}
         public override FortuneTellerResult FortuneTellerResult => FortuneTellerResult.Good;
 
         public override void DoAction()

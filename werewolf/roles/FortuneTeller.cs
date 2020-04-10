@@ -9,7 +9,6 @@ namespace WerewolfServer.Game
 
     public class FortuneTeller : SingleTargetCharacter
     {
-        public FortuneTeller(string name) : base(name) {}
         public override FortuneTellerResult FortuneTellerResult => FortuneTellerResult.Good;
 
         public override void DoAction()

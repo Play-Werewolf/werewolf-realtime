@@ -6,16 +6,16 @@ namespace WerewolfServer.Game
 {
     public class AlphaWerewolf : SingleTargetCharacter
     {
-        Player Attacker;
-
-        public AlphaWerewolf(string name) : base(name) {}
+        public Player Attacker;
 
         public override Power BaseDefense => Power.Basic;
         public override FortuneTellerResult FortuneTellerResult => FortuneTellerResult.Good;
 
-        public override void OnNightStart()
+        public override void PreAction()
         {
-            var ww = Game.GetWerewolves();
+            // Setting the attacker action instead of this action
+
+            var ww = Player.Game.GetWerewolves();
 
             if (ww.Count == 0)
             {
@@ -23,19 +23,15 @@ namespace WerewolfServer.Game
             }
             else
             {
-                Attacker = ww[Game.Random.Next(ww.Count)];
+                Attacker = ww[Player.Game.Random.Next(ww.Count)];
+                Attacker.Character.Night.Action = Night.Action;
+                Night.Action = NightAction.Empty;
             }
-        }
-
-        public override void PreAction()
-        {
-            // Setting the attacker action instead of this action
-            Attacker.Character.Night.Action = Night.Action;
-            Night.Action = NightAction.Empty;
         }
 
         public override void DoAction()
         {
+            Console.WriteLine("AWW doaction");
             Night.Action.FirstTarget.Character.Night.AddAttack(new Attack
             {
                 Attacker=this,
@@ -59,7 +55,12 @@ namespace WerewolfServer.Game
                 throw new InvalidProgramException("Game cannot contain more than one Alpha Werewolf");
             }
 
-            return aww.FirstOrDefault().Character as AlphaWerewolf;
+            if (aww.Count == 0)
+            {
+                return null;
+            }
+
+            return aww.First().Character as AlphaWerewolf;
         }
 
         public static List<Werewolf> GetWerewolves(this GameRoom game)
