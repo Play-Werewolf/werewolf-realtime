@@ -2,9 +2,16 @@ namespace WerewolfServer.Game
 {
     public class Player
     {
-        public Character Character {get;set;}
-        public GameRoom Game {get;set;}
-        
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string AvatarURL { get; set; } // ?
+
+
+        public Character Character { get; set; }
+        public GameRoom Game { get; set; }
+
+        public Player() { }
+
         public Player(Character player)
         {
             Character = player;
@@ -23,15 +30,15 @@ namespace WerewolfServer.Game
 
         public void ChangeRole(Character c)
         {
-        #if(DEBUG)
+#if (DEBUG)
             c.WithName(Character._name);
-        #endif
+#endif
             // Copying all fields to the new Character object
             c.DeathNight = Character.DeathNight;
-            
+
             // For preserving messages
             c.Night = Character.Night;
-            
+
             c.Player = this;
             Character = c;
         }

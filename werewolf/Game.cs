@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+using WerewolfServer.Platform;
+
 namespace WerewolfServer.Game
 {
     public class GameRoom
@@ -11,15 +13,21 @@ namespace WerewolfServer.Game
 
         public List<Player> Players { get; set; } = new List<Player>();
 
+        public TimeProvider Time { get; set; } = new TimeProvider(); // TODO: Inject dependency?
+        public GameState State { get; set; }
+        public GameConfig Config { get; set; }
+
         public GameRoom()
         {
             Reset();
+            Config = new GameConfig();
         }
 
         public void Reset()
         {
             Players.Clear();
             CurrentNight = 0;
+            State = new LobbyState(this);
         }
 
         public void AddPlayer(Player p)
@@ -30,6 +38,16 @@ namespace WerewolfServer.Game
             }
             p.Game = this;
             this.Players.Add(p);
+        }
+
+        public void RemovePlayer(Player player)
+        {
+            if (player == null)
+            {
+                throw new InvalidOperationException("Cannot remove null player from a gameroom");
+            }
+            player.Game = null;
+            this.Players.Remove(player);
         }
 
         public void StartNight()
@@ -83,6 +101,24 @@ namespace WerewolfServer.Game
             }
 
             return callouts.ToArray();
+        }
+
+        public void HandleCommand(GameCommand command)
+        {
+            GameState s = State.HandleEvent(command);
+            if (s != State)
+            {
+                State = s;
+            }
+        }
+
+        public void DoTimer()
+        {
+            HandleCommand(new GameCommand
+            {
+                Sender = null,
+                Type = CommandType.Timer,
+            });
         }
     }
 }
