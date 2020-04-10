@@ -2,7 +2,7 @@ using Xunit;
 
 using WerewolfServer.Game;
 
-namespace werewolf.tests
+namespace WerewolfServer.Tests
 {
     public class BaseTests
     {
@@ -36,7 +36,7 @@ namespace werewolf.tests
 
             ww.Character.SetAction(new UnaryAction(h));
             aww.Character.SetAction(new UnaryAction(c));
-            
+
             game.ProcessNight();
 
             Assert.True(ww.Character.Alive);
