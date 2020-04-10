@@ -134,5 +134,22 @@ namespace werewolf.tests
             Assert.Contains(ww.Character.Night.Messages, m => m.Content == "You have been promoted to Alpha Werewolf");
             Assert.True(ww.Character is AlphaWerewolf);
         }
+
+        [Fact]
+        public void TestOnlyOnePromotion()
+        {
+            game = new GameRoom();
+
+            aww = new Player(new Werewolf());
+            ww = new Player(new Werewolf());
+
+            game.AddPlayer(aww);
+            game.AddPlayer(ww);
+
+            game.StartNight();
+
+            Assert.NotNull(game.GetAlphaWerewolf());
+            Assert.Equal(1, (int)game.GetWerewolves().Count);
+        }
     }
 }
