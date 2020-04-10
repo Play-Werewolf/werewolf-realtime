@@ -3,6 +3,7 @@ namespace WerewolfServer.Game
     public class Healer : SingleTargetCharacter
     {
         public override FortuneTellerResult FortuneTellerResult => FortuneTellerResult.Good;
+        public override Alignment Alignment => Alignment.Good;
 
         public override void DoAction()
         {

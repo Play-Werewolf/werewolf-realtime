@@ -10,6 +10,7 @@ namespace WerewolfServer.Game
 
         public override Power BaseDefense => Power.Basic;
         public override FortuneTellerResult FortuneTellerResult => FortuneTellerResult.Good;
+        public override Alignment Alignment => Alignment.Evil;
 
         public override void PreAction()
         {

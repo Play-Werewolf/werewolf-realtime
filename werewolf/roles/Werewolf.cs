@@ -4,9 +4,9 @@ namespace WerewolfServer.Game
 {
     public class Werewolf : SingleTargetCharacter
     {
-        public override Alignment Alignment => Alignment.Evil;
         public override FortuneTellerResult FortuneTellerResult => FortuneTellerResult.Evil;
-
+        public override Alignment Alignment => Alignment.Evil;
+        
         private void PromoteToAlpha()
         {
             SendMessage("You have been promoted to Alpha Werewolf");

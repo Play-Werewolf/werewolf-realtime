@@ -6,10 +6,10 @@ namespace WerewolfServer.Game
     public class GameRoom
     {
         public Random Random = new Random();
-        
-        public int CurrentNight {get;set;}
 
-        public List<Player> Players {get;set;} = new List<Player>();
+        public int CurrentNight { get; set; }
+
+        public List<Player> Players { get; set; } = new List<Player>();
 
         public GameRoom()
         {
@@ -24,7 +24,8 @@ namespace WerewolfServer.Game
 
         public void AddPlayer(Player p)
         {
-            if (p == null) {
+            if (p == null)
+            {
                 throw new InvalidOperationException("Cannot insert null player to a gameroom");
             }
             p.Game = this;
@@ -66,6 +67,22 @@ namespace WerewolfServer.Game
 
             foreach (var p in Players.Prioritized())
                 p.Character.OnNightEnd();
+        }
+
+        public string[] MakeDeathLog()
+        {
+            List<string> callouts = new List<string>();
+
+            foreach (var p in Players)
+            {
+                if (p.Character.DeathNight != CurrentNight)
+                    continue;
+
+                callouts.Add("We found " + p + ", dead in their house tonight");
+                callouts.Add(p.Character.FormatDeathMessage());
+            }
+
+            return callouts.ToArray();
         }
     }
 }

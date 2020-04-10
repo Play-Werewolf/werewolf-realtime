@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace WerewolfServer.Game
 {
     public abstract class Character
@@ -9,21 +11,18 @@ namespace WerewolfServer.Game
         
         public bool Alive => DeathNight == NotDead;
         
-        public virtual Alignment Alignment => Alignment.Good;
 
         public Night Night {get;set;}
 
         public virtual Power BaseDefense => Power.None;
 
-
+        public abstract Alignment Alignment {get;}
         public abstract FortuneTellerResult FortuneTellerResult {get;}
-
 
         public Character()
         {
             Night = new Night(this);
         }
-
 
     #if(DEBUG)
         public string _name;
@@ -67,7 +66,7 @@ namespace WerewolfServer.Game
         public virtual void OnNightStart() {}
 
         // Called when the user asks for an action (day or night)
-        public virtual void SetAction(NightAction action)
+        public void SetAction(NightAction action)
         {
             this.Night.Action = action;
         }
@@ -103,6 +102,22 @@ namespace WerewolfServer.Game
         public virtual void OnDefenseSuccess(Character p) {}
         public virtual void OnDefenseFailed(Character p) {}
 
-        
+        public virtual string FormatDeathMessage()
+        {
+            var attacks = Night.Attacks;
+            var sb = new StringBuilder("They were apparently ");
+            for (int i = 0; i < attacks.Count; i++)
+            {
+                if (i != 0)
+                {
+                    sb.Append(". They were also ");
+                }
+
+                sb.Append(attacks[i].Description);
+            }
+
+            sb.Append(".");
+            return sb.ToString();
+        }
     }
 }

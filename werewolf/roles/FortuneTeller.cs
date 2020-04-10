@@ -10,6 +10,7 @@ namespace WerewolfServer.Game
     public class FortuneTeller : SingleTargetCharacter
     {
         public override FortuneTellerResult FortuneTellerResult => FortuneTellerResult.Good;
+        public override Alignment Alignment => Alignment.Good;
 
         public override void DoAction()
         {
