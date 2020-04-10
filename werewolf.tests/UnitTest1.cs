@@ -17,7 +17,7 @@ namespace werewolf.tests
         private void Init()
         {
             game = new GameRoom();
-            c = new Character("c");
+            c = new Villager("c");
             ww = new Werewolf("ww");
             aww = new AlphaWerewolf("aww");
             h = new Healer("h");

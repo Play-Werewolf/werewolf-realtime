@@ -5,6 +5,7 @@ namespace WerewolfServer.Game
     public class Werewolf : SingleTargetCharacter
     {
         public override Alignment Alignment => Alignment.Evil;
+        public override FortuneTellerResult FortuneTellerResult => FortuneTellerResult.Evil;
 
         public Werewolf(string name) : base(name) {}
 
@@ -21,7 +22,7 @@ namespace WerewolfServer.Game
                 Target=Night.Action.FirstTarget,
                 Power=Power.Basic,
                 Description="attacked by a werewolf",
-            });
+            }, addVisit: true);
         }
     }
 }

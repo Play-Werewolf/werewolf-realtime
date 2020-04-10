@@ -8,7 +8,7 @@ namespace WerewolfServer
         static void Main(string[] args)
         {
             GameRoom g = new GameRoom();
-            Character p = new Character("John");
+            Character p = new Villager("John");
             Werewolf w = new Werewolf("Lolli");
             AlphaWerewolf aw = new AlphaWerewolf("aww");
             Healer h = new Healer("Heather");

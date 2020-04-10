@@ -11,6 +11,7 @@ namespace WerewolfServer.Game
         public AlphaWerewolf(string name) : base(name) {}
 
         public override Power BaseDefense => Power.Basic;
+        public override FortuneTellerResult FortuneTellerResult => FortuneTellerResult.Evil;
 
         public override void OnNightStart()
         {
@@ -40,7 +41,7 @@ namespace WerewolfServer.Game
                 Target=Night.Action.FirstTarget,
                 Power=Power.Basic,
                 Description="attacked by a werewolf",
-            });
+            }, addVisit: true);
         }
     }
 

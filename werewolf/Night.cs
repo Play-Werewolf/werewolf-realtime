@@ -95,14 +95,18 @@ namespace WerewolfServer.Game
             Messages.Add(message);
         }
 
-        public void AddAttack(Attack attack)
+        public void AddAttack(Attack attack, bool addVisit=false)
         {
             Attacks.Add(attack);
+            if (addVisit)
+                AddVisit(attack.Attacker);
         }
 
-        public void AddDefense(Defense defense)
+        public void AddDefense(Defense defense, bool addVisit=false)
         {
             Defenses.Add(defense);
+            if (addVisit)
+                AddVisit(defense.Defender);
         }
 
         public void AddVisit(Player player)

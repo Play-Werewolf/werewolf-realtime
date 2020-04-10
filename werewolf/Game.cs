@@ -46,14 +46,16 @@ namespace WerewolfServer.Game
         public void ProcessNight()
         {
             foreach (var p in Players)
-                p.Character.PreAction();
+                if (p.Character.Night.Action.ShouldAct)
+                    p.Character.PreAction();
 
             foreach (var p in Players)
                 if (p.Character.Night.Action.ShouldAct)
                     p.Character.DoAction();
 
             foreach (var p in Players)
-                p.Character.PostAction();
+                if (p.Character.Night.Action.ShouldAct)
+                    p.Character.PostAction();
 
             foreach (var p in Players)
                 p.Character.Night.CalculateResults();
