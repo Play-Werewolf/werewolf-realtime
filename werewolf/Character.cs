@@ -69,7 +69,7 @@ namespace WerewolfServer.Game
         }
 
         // Called before the action, if ShouldAct() returns true.
-        // Prepare stuff here
+        // Prepare stuff here (role blockings, redirects, etc...)
         public virtual void PreAction() {}
         
         // Perform the main action of the character.
@@ -90,5 +90,7 @@ namespace WerewolfServer.Game
         public virtual void OnDefense(Character p) {}
         public virtual void OnDefenseSuccess(Character p) {}
         public virtual void OnDefenseFailed(Character p) {}
+
+        
     }
 }

@@ -19,7 +19,7 @@ namespace WerewolfServer.Game
 
         public override void PostAction()
         {
-            SendMessage("Your target seems " + Night.Action.FirstTarget.Character.FortuneTellerResult.GetResultString());
+            SendMessage(Night.Action.FirstTarget.Character.FortuneTellerResult.GetResultString());
         }
     }
 

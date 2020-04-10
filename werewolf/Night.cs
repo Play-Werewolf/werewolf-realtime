@@ -21,6 +21,7 @@ namespace WerewolfServer.Game
 
     public class NightAction
     {
+        public static NightAction Empty => new BooleanAction(false);
         public virtual bool ShouldAct => false;
         public virtual Player FirstTarget => null;
         public virtual Player SecondTarget => null;
@@ -68,7 +69,7 @@ namespace WerewolfServer.Game
     {
         public List<Attack> Attacks {get;set;} = new List<Attack>();
         public List<Defense> Defenses {get;set;} = new List<Defense>();
-        public NightAction Action {get;set;} = new BooleanAction(false); // Doing nothing
+        public NightAction Action {get;set;} = NightAction.Empty;
         public List<Message> Messages {get;set;} = new List<Message>();
         public List<Player> VisitedBy {get;set;} = new List<Player>();
 
@@ -87,7 +88,7 @@ namespace WerewolfServer.Game
             Defenses.Clear();
             VisitedBy.Clear();
             Messages.Clear();
-            Action = new BooleanAction(false);
+            Action = NightAction.Empty;
         }
 
         public void SendMessage(Message message)

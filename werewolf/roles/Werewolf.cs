@@ -1,5 +1,3 @@
-using System;
-
 namespace WerewolfServer.Game
 {
     public class Werewolf : SingleTargetCharacter

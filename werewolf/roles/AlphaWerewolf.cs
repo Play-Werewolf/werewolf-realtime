@@ -11,7 +11,7 @@ namespace WerewolfServer.Game
         public AlphaWerewolf(string name) : base(name) {}
 
         public override Power BaseDefense => Power.Basic;
-        public override FortuneTellerResult FortuneTellerResult => FortuneTellerResult.Evil;
+        public override FortuneTellerResult FortuneTellerResult => FortuneTellerResult.Good;
 
         public override void OnNightStart()
         {
@@ -27,10 +27,11 @@ namespace WerewolfServer.Game
             }
         }
 
-        public override void SetAction(NightAction action)
+        public override void PreAction()
         {
             // Setting the attacker action instead of this action
-            Attacker.Character.Night.Action = action;
+            Attacker.Character.Night.Action = Night.Action;
+            Night.Action = NightAction.Empty;
         }
 
         public override void DoAction()

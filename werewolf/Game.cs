@@ -33,34 +33,34 @@ namespace WerewolfServer.Game
 
         public void StartNight()
         {
-            foreach (var p in Players)
+            foreach (var p in Players.Prioritized())
                 p.Character.OnBeforeNight();
 
-            foreach (var p in Players)
+            foreach (var p in Players.Prioritized())
                 p.Character.Night.Reset();
 
-            foreach (var p in Players)
+            foreach (var p in Players.Prioritized())
                 p.Character.OnNightStart();
         }
 
         public void ProcessNight()
         {
-            foreach (var p in Players)
+            foreach (var p in Players.Prioritized())
                 if (p.Character.Night.Action.ShouldAct)
                     p.Character.PreAction();
 
-            foreach (var p in Players)
+            foreach (var p in Players.Prioritized())
                 if (p.Character.Night.Action.ShouldAct)
                     p.Character.DoAction();
 
-            foreach (var p in Players)
+            foreach (var p in Players.Prioritized())
                 if (p.Character.Night.Action.ShouldAct)
                     p.Character.PostAction();
 
-            foreach (var p in Players)
+            foreach (var p in Players.Prioritized())
                 p.Character.Night.CalculateResults();
 
-            foreach (var p in Players)
+            foreach (var p in Players.Prioritized())
                 p.Character.OnNightEnd();
         }
     }
