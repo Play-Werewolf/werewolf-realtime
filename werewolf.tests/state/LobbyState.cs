@@ -4,15 +4,16 @@ using WerewolfServer.Game;
 
 namespace WerewolfServer.Tests
 {
-    public class LobbyStateTests
+    public partial class StateTests
     {
-        GameRoom game;
-        Player a;
-        Player b;
+        public GameRoom game;
+        public Player a;
+        public Player b;
 
         void Init()
         {
             game = new GameRoom();
+            game.Config.MinPlayers = 2;
             a = new Player();
             b = new Player();
 
@@ -92,7 +93,7 @@ namespace WerewolfServer.Tests
         }
 
         [Fact]
-        public void StartGame()
+        public void TestStartGame()
         {
             TestUserReady();
             game.HandleCommand(new GameCommand

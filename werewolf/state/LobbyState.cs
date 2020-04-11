@@ -15,7 +15,7 @@ namespace WerewolfServer.Game
             RegisterHandler(CommandType.UserReady, HandlePlayerReady);
             RegisterHandler(CommandType.UserNotReady, HandlePlayerNotReady);
         }
-
+        
         public GameState HandlePlayerJoin(GameCommand command)
         {
             if (command.Sender == null)
@@ -52,7 +52,7 @@ namespace WerewolfServer.Game
 
             ReadyPlayers.Add(command.Sender);
 
-            if (ReadyPlayers.Count == Game.Players.Count)
+            if (ReadyPlayers.Count == Game.Players.Count && ReadyPlayers.Count >= Game.Config.MinPlayers)
             {
                 return new GameInitState(Game);
             }

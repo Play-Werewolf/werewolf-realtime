@@ -16,7 +16,7 @@ namespace WerewolfServer.Game
         KickUser,
     }
 
-    public class GameCommand // Bad typing?
+    public sealed class GameCommand
     {
         public CommandType Type;
         public Player Sender; // set to null for admin Events
@@ -42,6 +42,7 @@ namespace WerewolfServer.Game
             Game = game;
         }
 
+        // TODO: Convert to attribute
         protected void RegisterHandler(CommandType type, Func<GameCommand, GameState> handler)
         {
             handlers[type] = handler;
