@@ -10,32 +10,37 @@ namespace WerewolfServer.Network
     public class NetworkManager
     {
         SessionManager<NetworkSession> Sessions;
+        List<NetworkConnection> Connections;
         RoomManager Rooms;
         WebSocketServer Server;
 
         public NetworkManager()
         {
+            Connections = new List<NetworkConnection>();
             Sessions = new SessionManager<NetworkSession>();
             Rooms = new RoomManager();
             Server = new WebSocketServer("ws://0.0.0.0");
+        }
+
+        public void Start()
+        {
             Server.Start(HandleSocket);
         }
 
         public void HandleSocket(IWebSocketConnection socket)
         {
-            NetworkSession ses = null;
+            NetworkConnection conn = null;
 
             socket.OnOpen = () =>
             {
-                ses = new NetworkSession(socket);
-                Sessions.AddSession(ses);
+                conn = new NetworkConnection(this, socket);
+                Connections.Add(conn);
             };
 
             socket.OnClose = () =>
             {
-                // TODO: Do not remove session from session manager immediately, and also make
-                // some code to recheck session connection.
-                Sessions.RemoveSession(ses);
+                if (Connections.Contains(conn))
+                    Connections.Remove(conn);
             };
         }
     }

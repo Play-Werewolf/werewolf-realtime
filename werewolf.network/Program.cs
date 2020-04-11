@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 using Fleck;
 
 using WerewolfServer.Management;
@@ -10,14 +12,9 @@ namespace WerewolfServer.Network
     {
         static void Main(string[] args)
         {
-            SessionManager sessions = new SessionManager();
-            RoomManager rooms = new RoomManager();
-
-            var server = new WebSocketServer("ws://0.0.0.0", true);
-            server.Start(sockt =>
-            {
-
-            });
+            NetworkManager manager = new NetworkManager();
+            manager.Start();
+            Console.ReadLine();
         }
     }
 }

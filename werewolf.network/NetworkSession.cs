@@ -30,25 +30,10 @@ namespace WerewolfServer.Network
             throw new NotImplementedException();
         }
 
-        public NetworkSession(IWebSocketConnection socket)
+        public NetworkSession(IWebSocketConnection socket, LoginState state)
         {
             Socket = socket;
-        }
-
-        public bool ConnectAnonymously(string nickname)
-        {
-            if (LoginState.IsAuthenticated)
-                return true;
-
-            LoginState.IsAnonymous = true;
-            LoginState.IsAuthenticated = true;
-            LoginState.Nickname = nickname;
-            return true;
-        }
-
-        public bool ConnectWithCreds()
-        {
-            return false; // Not implemented
+            LoginState = state;
         }
     }
 }
