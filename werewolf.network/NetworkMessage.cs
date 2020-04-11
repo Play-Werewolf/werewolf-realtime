@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace WerewolfServer.Network
 {
@@ -9,7 +10,7 @@ namespace WerewolfServer.Network
         string[] parts;
 
         public string Type => parts[0];
-        public IEnumerable<string> Args
+        public IEnumerable<string> IterArgs
         {
             get
             {
@@ -17,6 +18,7 @@ namespace WerewolfServer.Network
                     yield return parts[i];
             }
         }
+        public string[] Args => IterArgs.ToArray();
 
         public NetworkMessage(string raw)
         {

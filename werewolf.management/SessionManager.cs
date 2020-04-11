@@ -9,6 +9,11 @@ namespace WerewolfServer.Management
     {
         public List<TSession> Sessions;
 
+        public SessionManager()
+        {
+            Sessions = new List<TSession>();
+        }
+
         public void AddSession(TSession session)
         {
             if (Sessions.Contains(session))
@@ -24,6 +29,19 @@ namespace WerewolfServer.Management
 
             if (session.Player != null)
                 session.DetachPlayer();
+
+            Sessions.Remove(session);
+        }
+
+        public TSession GetSession(string sessionId)
+        {
+            // Can we optimize this?
+            foreach (var ses in Sessions)
+            {
+                if (ses.Id == sessionId)
+                    return ses;
+            }
+            return null;
         }
 
         public void AddSessionToRoom(TSession session, GameRoom room)
