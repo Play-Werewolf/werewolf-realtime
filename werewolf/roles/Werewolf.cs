@@ -16,7 +16,6 @@ namespace WerewolfServer.Game
 
         public override void OnNightStart()
         {
-            Console.WriteLine("Werewolf onBeforeNight");
             if (Player.Game.GetAlphaWerewolf() == null)
             {
                 var wws = Player.Game.GetWerewolves();
