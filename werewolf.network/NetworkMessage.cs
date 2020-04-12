@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 
 namespace WerewolfServer.Network
 {
-    class NetworkMessage
+    public class NetworkMessage
     {
         string[] parts;
 

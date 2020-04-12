@@ -13,8 +13,8 @@ namespace WerewolfServer.Network
             
             while (true)
             {
-                manager.ClearSessions();
-                RenderAll();
+                manager.CleanupSessions();
+                // RenderAll();
                 System.Threading.Thread.Sleep(500);
             }
         }

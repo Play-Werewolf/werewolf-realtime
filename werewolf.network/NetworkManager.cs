@@ -46,13 +46,9 @@ namespace WerewolfServer.Network
             };
         }
 
-        public void ClearSessions()
+        public void CleanupSessions()
         {
-#if (DEBUG)
-            DateTime threshold = DateTime.Now - new TimeSpan(0, 2, 10);
-#else
             DateTime threshold = DateTime.Now - new TimeSpan(0, 2, 0);
-#endif
             List<NetworkSession> toDelete = new List<NetworkSession>();
             foreach (var ses in Sessions.Sessions)
             {
