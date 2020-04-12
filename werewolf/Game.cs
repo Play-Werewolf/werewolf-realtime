@@ -7,11 +7,12 @@ namespace WerewolfServer.Game
 {
     public class GameRoom
     {
-        public Random Random = new Random();
-
+        public DateTime LastTimer { get; set; }
         public int CurrentNight { get; set; }
 
         public List<Player> Players { get; set; } = new List<Player>();
+        public List<Player> ReadyPlayers { get; set; } = new List<Player>();
+        public List<string> RolesBank { get; set; } = new List<string>();
 
         public TimeProvider Time { get; set; } = new TimeProvider(); // TODO: Inject dependency?
         public GameState State { get; set; }
@@ -42,7 +43,20 @@ namespace WerewolfServer.Game
         {
             Players.Clear();
             CurrentNight = 0;
+            LastTimer = Time.Now;
             State = new LobbyState(this);
+        }
+
+        public void Timer()
+        {
+            var now = Time.Now;
+            var newState = State.TriggerTimer((float)(now - LastTimer).TotalSeconds);
+            if (newState != State)
+            {
+                State = newState; // TODO: Send state update to clients
+            }
+
+            LastTimer = now;
         }
 
         public void AddPlayer(Player p)
@@ -62,7 +76,12 @@ namespace WerewolfServer.Game
                 throw new InvalidOperationException("Cannot remove null player from a gameroom");
             }
             player.Game = null;
-            this.Players.Remove(player);
+
+            if (this.ReadyPlayers.Contains(player))
+                this.ReadyPlayers.Remove(player);
+
+            if (this.Players.Contains(player))
+                this.Players.Remove(player);
         }
 
         public void StartNight()
@@ -118,23 +137,20 @@ namespace WerewolfServer.Game
             return callouts.ToArray();
         }
 
-        public void HandleCommand(GameCommand command)
+        public void PlayerReady(Player player)
         {
-            GameState s = State.HandleEvent(command);
-            Console.WriteLine(State);
-            if (s != State)
-            {
-                State = s;
-            }
+            if (this.ReadyPlayers.Contains(player))
+                return;
+
+            this.ReadyPlayers.Add(player);
         }
 
-        public void DoTimer()
+        public void PlayerNotReady(Player player)
         {
-            HandleCommand(new GameCommand
-            {
-                Sender = null,
-                Type = CommandType.Timer,
-            });
+            if (!this.ReadyPlayers.Contains(player))
+                return;
+
+            this.ReadyPlayers.Remove(player);
         }
     }
 }

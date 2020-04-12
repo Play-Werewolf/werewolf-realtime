@@ -1,4 +1,4 @@
-using System;
+using WerewolfServer.Platform;
 
 namespace WerewolfServer.Game
 {
@@ -22,7 +22,7 @@ namespace WerewolfServer.Game
                 if (wws.Count == 0)
                     return;
 
-                var ww = wws[Player.Game.Random.Next(wws.Count)];
+                var ww = wws[Rand.Random.Next(wws.Count)];
                 ww.PromoteToAlpha();
             }
         }

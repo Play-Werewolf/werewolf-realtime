@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
+using WerewolfServer.Platform;
+
 namespace WerewolfServer.Game
 {
     public class AlphaWerewolf : SingleTargetCharacter
@@ -24,7 +26,7 @@ namespace WerewolfServer.Game
             }
             else
             {
-                Attacker = ww[Player.Game.Random.Next(ww.Count)];
+                Attacker = ww[Rand.Random.Next(ww.Count)];
                 Attacker.Character.Night.Action = Night.Action;
                 Night.Action = NightAction.Empty;
             }

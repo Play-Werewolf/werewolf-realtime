@@ -1,72 +1,48 @@
+using System;
 using System.Collections.Generic;
 
 namespace WerewolfServer.Game
 {
     public class LobbyState : GameState
     {
-        public List<Player> ReadyPlayers;
+        public LobbyState(GameRoom game) : base(game) {}
 
-        public LobbyState(GameRoom game) : base(game)
+        public override void OnStart()
         {
-            ReadyPlayers = new List<Player>();
+            if (Game.ReadyPlayers == null)
+                Game.ReadyPlayers = new List<Player>();
 
-            RegisterHandler(CommandType.UserJoin, HandlePlayerJoin);
-            RegisterHandler(CommandType.UserLeave, HandlePlayerLeave);
-            RegisterHandler(CommandType.UserReady, HandlePlayerReady);
-            RegisterHandler(CommandType.UserNotReady, HandlePlayerNotReady);
-        }
-        
-        public GameState HandlePlayerJoin(GameCommand command)
-        {
-            if (command.Sender == null)
-                return this;
-            if (Game.Players.Contains(command.Sender))
-                return this;
-
-            Game.AddPlayer(command.Sender);
-            return this;
+            Game.ReadyPlayers.Clear();
         }
 
-        public GameState HandlePlayerLeave(GameCommand command)
+        public override void OnTimer(float timeDelta)
         {
-            if (command.Sender == null)
-                return this;
-
-            if (!Game.Players.Contains(command.Sender))
-                return this;
-
-            if (ReadyPlayers.Contains(command.Sender))
-                ReadyPlayers.Remove(command.Sender);
-
-            Game.RemovePlayer(command.Sender);
-            return this;
-        }
-
-        public GameState HandlePlayerReady(GameCommand command)
-        {
-            if (!Game.Players.Contains(command.Sender))
-                return this;
-                
-            if (ReadyPlayers.Contains(command.Sender))
-                return this;
-
-            ReadyPlayers.Add(command.Sender);
-
-            if (ReadyPlayers.Count == Game.Players.Count && ReadyPlayers.Count >= Game.Config.MinPlayers)
+            if (Game.ReadyPlayers.Count == Game.Players.Count
+                && Game.Players.Count >= Game.Config.MinPlayers
+                && Game.Players.Count <= Game.RolesBank.Count)
             {
-                return new GameInitState(Game);
+                ChangeState(new GameInitState(Game));
             }
-
-            return this;
         }
 
-        public GameState HandlePlayerNotReady(GameCommand command)
+        public override void OnEnd()
         {
-            if (!ReadyPlayers.Contains(command.Sender))
-                return this;
+            try
+            {
+                RoleGenerator_ x = new RoleGenerator_();
+                var characters = x.GenerateTown(Game.RolesBank.ToArray());
 
-            ReadyPlayers.Remove(command.Sender);
-            return this;
+                for (var i = 0; i < characters.Length; i++)
+                {
+                    Game.Players[i].AttachCharacter(characters[i]);
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine("Exception: {0}", ex);
+                KeepState();
+                // TODO: Send state update for failure
+            }
         }
     }
 }

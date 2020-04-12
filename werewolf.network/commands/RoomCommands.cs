@@ -26,13 +26,7 @@ namespace WerewolfServer.Network
         {
             var game = sender.Manager.Rooms.CreateGame();
             sender.Session.InitPlayer();
-            
-            var cmd = new Game.GameCommand
-            {
-                Type = Game.CommandType.UserJoin,
-                Sender = sender.Session.Player,
-            };
-            game.HandleCommand(cmd);
+            game.AddPlayer(sender.Session.Player);
         }
     }
 
@@ -46,16 +40,8 @@ namespace WerewolfServer.Network
 
         public override void OnCommand()
         {
-            var cmd = new Game.GameCommand
-            {
-                Type = Game.CommandType.UserLeave,
-                Sender = sender.Session.Player
-            };
-
-            sender.Session.Player.Game.HandleCommand(cmd);
+            sender.Session.Player.Game.RemovePlayer(sender.Session.Player);
             sender.Session.DetachPlayer(); // Removing the player object
-
-
         }
     }
 
@@ -79,13 +65,7 @@ namespace WerewolfServer.Network
             sender.Session.InitPlayer();
             
             var game = sender.Manager.Rooms.Games[message.Args[0]];
-            var cmd = new Game.GameCommand
-            {
-                Type = Game.CommandType.UserJoin,
-                Sender = sender.Session.Player,
-            };
-
-            game.HandleCommand(cmd);
+            game.AddPlayer(sender.Session.Player);
         }
     }
 }

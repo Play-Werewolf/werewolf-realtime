@@ -1,32 +1,26 @@
-using System;
-
 namespace WerewolfServer.Game
 {
-    public class TimedState : GameState
+    public abstract class TimedState : GameState
     {
-        public DateTime CreatedOn { get; set; }
-        public DateTime EndsOn { get; set; }
 
-        public TimedState(GameRoom game, TimeSpan length) : base(game)
+        public abstract GameState NextGamestate { get; }
+
+        float TimeLeft {get;set;}
+
+        public TimedState(GameRoom game, float seconds)
+            : base(game)
         {
-            CreatedOn = Game.Time.Now;
-            EndsOn = CreatedOn + length;
-
-            RegisterHandler(CommandType.Timer, HandleTimer);
+            TimeLeft = seconds;
         }
 
-        public GameState HandleTimer(GameCommand command)
+        public override void OnTimer(float timeDelta)
         {
-            if (Game.Time.Now > EndsOn)
+            TimeLeft -= timeDelta;
+
+            if (TimeLeft < 0)
             {
-                return OnTimer();
+                ChangeState(NextGamestate);
             }
-            return this;
-        }
-
-        public virtual GameState OnTimer()
-        {
-            return this;
         }
     }
 }

@@ -27,6 +27,15 @@ namespace WerewolfServer.Game
             Character.Player = this; // One to one relationship between the player and the character
         }
 
+        public void AttachCharacter(Character character)
+        {
+            if (Character != null)
+                return;
+
+            Character = character;
+            Character.Player = this;
+        }
+
         public static implicit operator Character(Player player)
         {
             return player.Character;
