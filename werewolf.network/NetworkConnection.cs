@@ -12,6 +12,8 @@ namespace WerewolfServer.Network
 
         Dictionary<string, BaseCommand> handlers = new Dictionary<string, BaseCommand>();
 
+        public bool IsInRoom => Session?.Player?.Game != null;
+
         void RegisterCommand<T>() where T: BaseCommand, new()
         {
             var cmd = new T();
@@ -42,6 +44,10 @@ namespace WerewolfServer.Network
             RegisterCommand<AuthenticateAnonymous>();
             RegisterCommand<Authenticate>();
             RegisterCommand<RestoreSession>();
+
+            RegisterCommand<CreateRoomCommand>();
+            RegisterCommand<JoinRoomCommand>();
+            RegisterCommand<LeaveRoomCommand>();
         }
 
         public override string ToString()
@@ -69,71 +75,6 @@ namespace WerewolfServer.Network
             Manager.Sessions.AddSession(session);
         }
 
-        // void AuthenticateAnonymous(NetworkMessage message)
-        // {
-        //     if (Session != null)
-        //     {
-        //         SendSessionStatus();
-        //         return;
-        //     }
-
-        //     if (message.Args.Length != 1)
-        //     {
-        //         SendAuthenticationError();
-        //         return;
-        //     }
-
-        //     var nickname = message.Args[0];
-
-        //     Login(new NetworkSession(this, new LoginState
-        //     {
-        //         IsAnonymous = true,
-        //         IsAuthenticated = true,
-        //         Nickname = nickname,
-        //         UserID = ""
-        //     }));
-
-        //     SendSessionStatus();
-        // }
-
-        // void Authenticate(NetworkMessage message)
-        // {
-        //     SendAuthenticationError("Not implemented");
-        // }
-
-        // void RestoreSession(NetworkMessage message)
-        // {
-        //     if (message.Args.Length != 1)
-        //     {
-        //         SendAuthenticationError("Invalid number of arguments");
-        //         return;
-        //     }
-
-        //     if (Session != null)
-        //     {
-        //         SendAuthenticationError("Connection is already bound to session");
-        //         return;
-        //     }
-
-        //     var sessionId = message.Args[0];
-        //     var session = Manager.Sessions.GetSession(sessionId);
-        //     Console.WriteLine(">>> {0}", session);
-        //     if (session == null)
-        //     {
-        //         SendAuthenticationError("Session not found");
-        //         return;
-        //     }
-
-        //     if (session.Connection != null)
-        //     {
-        //         SendAuthenticationError("Session is already bound");
-        //         return;
-        //     }
-
-        //     Login(session);
-        //     SendSessionStatus();
-        // }
-
         public void SendSessionStatus()
         {
             if (Session == null)
@@ -160,6 +101,21 @@ namespace WerewolfServer.Network
         public void SendAuthenticationError(string reason = null)
         {
             Send(messageType: "session_status", "authentication_error", reason);
+        }
+
+        public void SendRoomStatus()
+        {
+            if (!IsInRoom)
+            {
+                Send(messageType: "room_status", "not_connected");
+                return;
+            }
+
+            Send(
+                messageType: "room_status",
+                "connected",
+                Session.Player.Game.Id
+            );
         }
     }
 }

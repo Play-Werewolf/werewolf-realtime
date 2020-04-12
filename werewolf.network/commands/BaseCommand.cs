@@ -17,7 +17,7 @@ namespace WerewolfServer.Network
     public class BaseCommand
     {
         public virtual int ArgumentsNumber => 0;
-        public virtual bool RequiresSession => false;
+        public virtual bool RequiresSession => true;
         public virtual bool Validate() { return true; }
         public virtual string CommandType => "";
 
@@ -26,7 +26,11 @@ namespace WerewolfServer.Network
 
         public virtual void OnCommand() { }
         public virtual void AfterCommand() { }
-        public virtual void OnError(Error error) { }
+
+        public virtual void OnError(Error error)
+        {
+            sender.Send(error.Description, error.Args);
+        }
 
         public BaseCommand Init(NetworkConnection sender, NetworkMessage message)
         {
@@ -54,10 +58,10 @@ namespace WerewolfServer.Network
                 return;
 
             if (message.Args.Length != ArgumentsNumber)
-                throw new Error("error", "Invalid number of arguments");
+                throw new Error("Invalid number of arguments");
 
             if (RequiresSession && sender.Session == null)
-                throw new Error("error", "Session required");
+                throw new Error("Session required");
 
             if (!Validate())
                 return;

@@ -11,6 +11,11 @@ namespace WerewolfServer.Management
         Random random {get;} = new Random();
         public Dictionary<string, GameRoom> Games;
         
+        public RoomManager()
+        {
+            Games = new Dictionary<string, GameRoom>();
+        }
+
         public void CheckStaleGames()
         {
             foreach (var key in Games.Keys)
@@ -37,11 +42,11 @@ namespace WerewolfServer.Management
             return id;
         }
 
-        public string CreateGame()
+        public GameRoom CreateGame()
         {
             string id = GenerateID();
-            Games[id] = new GameRoom();
-            return id;
+            Games[id] = new GameRoom(id);
+            return Games[id];
         }
     }
 }

@@ -29,7 +29,15 @@ namespace WerewolfServer.Network
 
         public override Player CreatePlayer()
         {
-            throw new NotImplementedException();
+            return new Player(Id, LoginState.Nickname, "TODO:implement avatars");
+        }
+
+        public void InitPlayer()
+        {
+            if (Player != null)
+                DetachPlayer();
+
+            AttachPlayer(CreatePlayer());
         }
 
         public NetworkSession(NetworkConnection connection, LoginState state)
@@ -40,6 +48,7 @@ namespace WerewolfServer.Network
 
         public void Disconnect()
         {
+            DetachPlayer();
             Connection = null;
             DisconnectionTime = DateTime.Now;
         }

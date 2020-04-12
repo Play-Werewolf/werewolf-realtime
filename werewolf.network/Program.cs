@@ -14,7 +14,7 @@ namespace WerewolfServer.Network
             while (true)
             {
                 manager.CleanupSessions();
-                // RenderAll();
+                RenderAll();
                 System.Threading.Thread.Sleep(500);
             }
         }
@@ -32,6 +32,12 @@ namespace WerewolfServer.Network
             foreach (var s in manager.Sessions.Sessions)
             {
                 Console.WriteLine(s.ToString());
+            }
+
+            Console.WriteLine("\nRooms:");
+            foreach (var r in manager.Rooms.Games.Values)
+            {
+                Console.WriteLine(r.ToString());
             }
         }
     }

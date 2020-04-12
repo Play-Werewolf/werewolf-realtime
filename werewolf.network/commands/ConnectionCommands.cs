@@ -1,9 +1,8 @@
-using System;
-
 namespace WerewolfServer.Network
 {
     public abstract class SessionCommand : BaseCommand
     {
+        public override bool RequiresSession => false;
         public override void AfterCommand()
         {
             sender.SendSessionStatus();
@@ -50,6 +49,7 @@ namespace WerewolfServer.Network
     {
         public override string CommandType => "restore_session";
         public override int ArgumentsNumber => 1;
+        public override bool RequiresSession => false;
 
         public override bool Validate()
         {
@@ -72,6 +72,7 @@ namespace WerewolfServer.Network
             }
 
             sender.Login(session);
+            sender.SendRoomStatus();
         }
     }
 }

@@ -17,10 +17,25 @@ namespace WerewolfServer.Game
         public GameState State { get; set; }
         public GameConfig Config { get; set; }
 
-        public GameRoom()
+        public string Id { get; private set; }
+
+        public GameRoom(string id)
         {
+            Id = id;
             Reset();
             Config = new GameConfig();
+        }
+
+        public GameRoom() : this("") { }
+
+        public override string ToString()
+        {
+            string s = Id + ") ";
+            foreach (var player in Players)
+            {
+                s += player.Name + ", ";
+            }
+            return s;
         }
 
         public void Reset()
@@ -106,6 +121,7 @@ namespace WerewolfServer.Game
         public void HandleCommand(GameCommand command)
         {
             GameState s = State.HandleEvent(command);
+            Console.WriteLine(State);
             if (s != State)
             {
                 State = s;
