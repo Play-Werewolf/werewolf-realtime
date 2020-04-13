@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -6,12 +5,15 @@ using WerewolfServer.Platform;
 
 namespace WerewolfServer.Game
 {
+    using System;
+
     public class GameRoom
     {
         public DateTime LastTimer { get; set; }
         public int CurrentNight { get; set; }
 
         public List<Player> Players { get; set; } = new List<Player>();
+        public Player PlayerOnStand { get; set; }
         public List<Player> ReadyPlayers { get; set; } = new List<Player>();
         public List<string> RolesBank { get; set; } = new List<string>();
         public NightPlayOrder[] NightPlayOrders { get; set; }
@@ -168,6 +170,23 @@ namespace WerewolfServer.Game
                 return;
 
             this.ReadyPlayers.Remove(player);
+        }
+
+        public bool IsGameOver()
+        {
+            var statistics = GameStats.CreateFrom(this);
+            bool endGame = false;
+            bool keepPlaying = false;
+
+            foreach (var player in Players)
+            {
+                player.Result = player.Character.Victory.GetResult(statistics, player);
+
+                endGame |= (player.Result == GameResult.WinAndEndGame || player.Result == GameResult.LoseAndEndGame);
+                keepPlaying |= (player.Result == GameResult.Unknown);
+            }
+
+            return endGame || !keepPlaying;
         }
     }
 }

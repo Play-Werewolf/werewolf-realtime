@@ -17,10 +17,12 @@ namespace WerewolfServer.Game
         // Returns true if the player is online (will become false the second the user disconnects)
         public bool IsOnline => IsConnected && Session.IsOnline;
 
-        public Player VoteAgainst { get; set; }
+        public Player VotesAgainst { get; set; }
+        public int Votes { get; set; }
 
         // True - votes to kill, False - votes innocent, null - abstains
         public bool? TrialVote { get; set; }
+        public GameResult Result { get; set; }
 
         public Player() { }
 
@@ -83,12 +85,52 @@ namespace WerewolfServer.Game
 
         public void VoteToKill(Player p)
         {
-            VoteAgainst = p;
+            if (!Character.Alive)
+                return;
+
+            if (VotesAgainst != null)
+                VotesAgainst.Votes--;
+
+            VotesAgainst = p;
+            if (VotesAgainst != null)
+                VotesAgainst.Votes++;
+
+            if (VotesAgainst.Votes > Game.Players.Count / 2)
+            {
+                Game.PlayerOnStand = VotesAgainst;
+            }
         }
 
         public void ResetVote()
         {
-            VoteAgainst = null;
+            if (!Character.Alive)
+                return;
+
+            if (VotesAgainst != null)
+                VotesAgainst.Votes--;
+
+            VotesAgainst = null;
+        }
+
+        public void VoteGuilty()
+        {
+            if (!Character.Alive)
+                return;
+            TrialVote = true;
+        }
+
+        public void VoteInnocent()
+        {
+            if (!Character.Alive)
+                return;
+            TrialVote = false;
+        }
+
+        public void UndoTrialVote()
+        {
+            if (!Character.Alive)
+                return;
+            TrialVote = null;
         }
 
         public override string ToString()

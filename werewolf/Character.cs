@@ -42,6 +42,8 @@ namespace WerewolfServer.Game
         public abstract Alignment Alignment { get; }
         public abstract FortuneTellerResult FortuneTellerResult { get; }
         public abstract NightPlayOrder NightOrder { get; }
+        public abstract VictoryCalculator Victory { get; }
+        public virtual bool ShouldPlay => true; // TODO: Implement
 
         public Character()
         {
@@ -125,6 +127,7 @@ namespace WerewolfServer.Game
         public virtual void OnDefense(Character p) { }
         public virtual void OnDefenseSuccess(Character p) { }
         public virtual void OnDefenseFailed(Character p) { }
+        public virtual void OnExecuted() { }
 
         public virtual string FormatDeathMessage()
         {

@@ -3,44 +3,18 @@ using System.Collections.Generic;
 
 namespace WerewolfServer.Game
 {
-    class DiscussionState : TimedState
+    class DiscussionState : TimedState // TODO: Vote to skip
     {
         public override GameState NextGamestate => new NightTransitionState(Game);
         public DiscussionState(GameRoom game) : base(game, 2 * 60 + 30) { }
 
-        Player GetVotedupPlayer()
-        {
-            Dictionary<Player, int> votes = new Dictionary<Player, int>();
-            foreach (var player in Game.Players)
-            {
-                if (player.VoteAgainst == null)
-                    continue;
-
-                if (votes.ContainsKey(player.VoteAgainst))
-                {
-                    votes[player.VoteAgainst]++;
-                }
-                else
-                {
-                    votes[player.VoteAgainst] = 1;
-                }
-            }
-
-            if (votes.Count == 0)
-                return null;
-
-            var kvp = votes.OrderBy(kvp => kvp.Value).FirstOrDefault();
-            if (kvp.Value > Game.Players.Count / 2)
-                return kvp.Key;
-
-            return null;
-        }
-
         public override void OnStart()
         {
+            Game.PlayerOnStand = null;
             foreach (var player in Game.Players)
             {
-                player.VoteAgainst = null;
+                player.VotesAgainst = null;
+                player.Votes = 0;
             }
         }
 
@@ -48,32 +22,31 @@ namespace WerewolfServer.Game
         {
             base.OnTimer(timeDelta);
 
-            var player = GetVotedupPlayer();
-            if (player == null)
+            if (Game.PlayerOnStand == null)
                 return;
 
             ChangeState(new TrialState(Game, this));
         }
     }
 
-    public abstract class CircularState : TimedState
+    public abstract class JudgementState : TimedState
     {
         public GameState BaseState;
-        public CircularState(GameRoom room, float timer, GameState baseState)
+        public JudgementState(GameRoom room, float timer, GameState baseState)
             : base(room, timer)
         {
             BaseState = baseState;
         }
     }
 
-    public class TrialState : CircularState
+    public class TrialState : JudgementState
     {
         public override GameState NextGamestate => new VotingState(Game, BaseState);
 
         public TrialState(GameRoom game, GameState state) : base(game, 30, state) { }
     }
 
-    public class VotingState : CircularState
+    public class VotingState : JudgementState
     {
         public override GameState NextGamestate => new VoteShowState(Game, BaseState);
 
@@ -88,7 +61,7 @@ namespace WerewolfServer.Game
         }
     }
 
-    public class VoteShowState : CircularState
+    public class VoteShowState : JudgementState
     {
         public override GameState NextGamestate
         {
@@ -103,6 +76,6 @@ namespace WerewolfServer.Game
             }
         }
 
-        public VoteShowState(GameRoom game, GameState state) : base(game, 30, state) { }
+        public VoteShowState(GameRoom game, GameState state) : base(game, 10, state) { }
     }
 }

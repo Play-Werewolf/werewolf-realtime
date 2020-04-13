@@ -1,3 +1,5 @@
+using System;
+
 namespace WerewolfServer.Game
 {
     public class Healer : SingleTargetCharacter
@@ -5,6 +7,7 @@ namespace WerewolfServer.Game
         public override FortuneTellerResult FortuneTellerResult => FortuneTellerResult.Good;
         public override Alignment Alignment => Alignment.Good;
         public override NightPlayOrder NightOrder => NightPlayOrder.Healer;
+        public override VictoryCalculator Victory => new TownVictory();
 
         public override void DoAction()
         {

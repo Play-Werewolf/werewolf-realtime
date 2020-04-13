@@ -8,6 +8,14 @@ namespace WerewolfServer.Game
     {
         public override GameState NextGamestate => new RolesLotState(Game);
         public GameInitState(GameRoom game) : base(game, 5) { }
+
+        public override void OnStart()
+        {
+            foreach (var p in Game.Players)
+            {
+                p.Result = GameResult.Unknown;
+            }
+        }
     }
 
     public class RolesLotState : TimedState
@@ -42,6 +50,18 @@ namespace WerewolfServer.Game
     {
         public override GameState NextGamestate => new NightTransitionState(Game);
         public ExecutionState(GameRoom game) : base(game, 7) { }
+
+        public override void OnEnd()
+        {
+            Game.PlayerOnStand.Character.Die();
+            Game.PlayerOnStand.Character.OnExecuted();
+            Game.PlayerOnStand = null;
+
+            if (Game.IsGameOver())
+            {
+                ChangeState(new GameOverState(Game));
+            }
+        }
     }
 
     public class DeathAnnounceState : GameState
@@ -64,7 +84,11 @@ namespace WerewolfServer.Game
 
             if (Callouts.Count == 0)
             {
-                ChangeState(new DiscussionState(Game));
+                if (Game.IsGameOver())
+                    ChangeState(new GameOverState(Game));
+                else
+                    ChangeState(new DiscussionState(Game));
+
                 return;
             }
 
@@ -74,5 +98,12 @@ namespace WerewolfServer.Game
 
             Console.WriteLine(">>> " + CurrentCall);
         }
+    }
+
+    public class GameOverState : TimedState
+    {
+        public override GameState NextGamestate => new LobbyState(Game);
+
+        public GameOverState(GameRoom game) : base(game, 30) { }
     }
 }

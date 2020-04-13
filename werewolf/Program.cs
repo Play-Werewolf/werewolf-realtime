@@ -91,6 +91,28 @@ namespace WerewolfServer.Game
 
             game.Timer();
             Console.WriteLine(game.State);
+
+            game.Time.AddOffset(new TimeSpan(0, 0, 30));
+            game.Timer();
+
+            Console.WriteLine(game.State);
+
+            foreach (var player in game.Players.Where(p => p.Character is Villager && p.Character.Alive))
+            {
+                player.VoteGuilty();
+            }
+
+            game.Time.AddOffset(new TimeSpan(0, 0, 30));
+            game.Timer();
+            Console.WriteLine(game.State);
+
+            game.Time.AddOffset(new TimeSpan(0, 0, 10));
+            game.Timer();
+            Console.WriteLine(game.State);
+
+            game.Time.AddOffset(new TimeSpan(0, 0, 10));
+            game.Timer();
+            Console.WriteLine(game.State);
         }
     }
 }

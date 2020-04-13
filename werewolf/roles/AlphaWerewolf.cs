@@ -14,6 +14,7 @@ namespace WerewolfServer.Game
         public override FortuneTellerResult FortuneTellerResult => FortuneTellerResult.Good;
         public override Alignment Alignment => Alignment.Evil;
         public override NightPlayOrder NightOrder => NightPlayOrder.Werewolves;
+        public override VictoryCalculator Victory => new WerewolfVictory();
 
         public override void PreAction()
         {
@@ -35,7 +36,6 @@ namespace WerewolfServer.Game
 
         public override void DoAction()
         {
-            Console.WriteLine("AWW doaction");
             Night.Action.FirstTarget.Character.Night.AddAttack(new Attack
             {
                 Attacker=this,

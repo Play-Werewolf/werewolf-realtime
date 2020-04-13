@@ -1,3 +1,5 @@
+using System;
+
 namespace WerewolfServer.Game
 {
     public enum FortuneTellerResult
@@ -12,6 +14,7 @@ namespace WerewolfServer.Game
         public override FortuneTellerResult FortuneTellerResult => FortuneTellerResult.Good;
         public override Alignment Alignment => Alignment.Good;
         public override NightPlayOrder NightOrder => NightPlayOrder.FortuneTeller;
+        public override VictoryCalculator Victory => new TownVictory();
 
         public override void DoAction()
         {
