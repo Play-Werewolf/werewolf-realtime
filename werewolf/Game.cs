@@ -61,6 +61,7 @@ namespace WerewolfServer.Game
             NightPlayOrders = Players
                 .Select(p => p.Character.NightOrder)
                 .Where(o => o != NightPlayOrder.NoPriority)
+                .Distinct()
                 .ToArray();
         }
 
