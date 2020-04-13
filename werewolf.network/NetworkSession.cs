@@ -25,6 +25,7 @@ namespace WerewolfServer.Network
         public DateTime DisconnectionTime { get; set; }
 
         public override bool IsValid => throw new NotImplementedException();
+        public override bool IsOnline => Connection != null;
 
 
         public override Player CreatePlayer()

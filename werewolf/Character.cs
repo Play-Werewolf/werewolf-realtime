@@ -2,29 +2,52 @@ using System.Text;
 
 namespace WerewolfServer.Game
 {
+    public enum NightPlayOrder
+    {
+        Werewolves,
+        Healer,
+        BodyGuard,
+        FortuneTeller,
+        Priest,
+        Finish,
+        NoPriority // Never plays
+    }
+
+    public static class NightPlayOrderExtensions
+    {
+        public static float GetPlayTime(this NightPlayOrder order)
+        {
+            if (order == NightPlayOrder.Werewolves)
+                return 30;
+
+            return 10;
+        }
+    }
+
     public abstract class Character
     {
-        public Player Player {get;set;}
+        public Player Player { get; set; }
         public static readonly int NotDead = -1;
-        
-        public int DeathNight {get;set;} = NotDead;
-        
-        public bool Alive => DeathNight == NotDead;
-        
 
-        public Night Night {get;set;}
+        public int DeathNight { get; set; } = NotDead;
+
+        public bool Alive => DeathNight == NotDead;
+
+
+        public Night Night { get; set; }
 
         public virtual Power BaseDefense => Power.None;
 
-        public abstract Alignment Alignment {get;}
-        public abstract FortuneTellerResult FortuneTellerResult {get;}
+        public abstract Alignment Alignment { get; }
+        public abstract FortuneTellerResult FortuneTellerResult { get; }
+        public abstract NightPlayOrder NightOrder { get; }
 
         public Character()
         {
             Night = new Night(this);
         }
 
-    #if(DEBUG)
+#if (DEBUG)
         public string _name;
         public Character WithName(string name)
         {
@@ -36,12 +59,12 @@ namespace WerewolfServer.Game
         {
             return string.Format("{0} {1} ({2})", GetType().Name, _name, Alive ? "alive" : "dead");
         }
-    #else
+#else
         public override string ToString()
         {
             return string.Format("{0} ({1})", GetType().Name, Alive ? "alive" : "dead");
         }
-    #endif
+#endif
 
         public void SendMessage(Message message)
         {
@@ -50,7 +73,7 @@ namespace WerewolfServer.Game
 
         public void Visit(Character other)
         {
-            other.Night.AddVisit(this); 
+            other.Night.AddVisit(this);
         }
 
         public virtual void Die()
@@ -60,10 +83,10 @@ namespace WerewolfServer.Game
         }
 
         // Called just before the night is reset and starts
-        public virtual void OnBeforeNight() {}
+        public virtual void OnBeforeNight() { }
 
         // Called jsut after the night is reset and started
-        public virtual void OnNightStart() {}
+        public virtual void OnNightStart() { }
 
         // Called when the user asks for an action (day or night)
         public void SetAction(NightAction action)
@@ -80,27 +103,27 @@ namespace WerewolfServer.Game
 
         // Called before the action, if ShouldAct() returns true.
         // Prepare stuff here (role blockings, redirects, etc...)
-        public virtual void PreAction() {}
-        
+        public virtual void PreAction() { }
+
         // Perform the main action of the character.
         // Visit other players here
-        public virtual void DoAction() {}
+        public virtual void DoAction() { }
 
         // Respond to visits here (e.g. veteran)
         // Refrain from making visits here
-        public virtual void PostAction() {}
-        public virtual void OnDeath() {}
-        public virtual void OnNightEnd() {}
+        public virtual void PostAction() { }
+        public virtual void OnDeath() { }
+        public virtual void OnNightEnd() { }
 
-        public virtual void OnAttackSuccess(Character p) {}
-        public virtual void OnAttackFailed(Character player) {}
+        public virtual void OnAttackSuccess(Character p) { }
+        public virtual void OnAttackFailed(Character player) { }
 
         // OnDefense will be called before attack and defense consequences take place.
         // Useful, for example, for bodyguard (adding attack to all attackers of target
         // before the attacks are calculated)
-        public virtual void OnDefense(Character p) {}
-        public virtual void OnDefenseSuccess(Character p) {}
-        public virtual void OnDefenseFailed(Character p) {}
+        public virtual void OnDefense(Character p) { }
+        public virtual void OnDefenseSuccess(Character p) { }
+        public virtual void OnDefenseFailed(Character p) { }
 
         public virtual string FormatDeathMessage()
         {

@@ -5,6 +5,7 @@ namespace WerewolfServer.Game
     public abstract class PlaySession
     {
         public abstract bool IsValid { get; } // Should perform integrity validation here
+        public abstract bool IsOnline { get; }
 
         public Player Player { get; protected set; }
 

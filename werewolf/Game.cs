@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using WerewolfServer.Platform;
@@ -13,6 +14,7 @@ namespace WerewolfServer.Game
         public List<Player> Players { get; set; } = new List<Player>();
         public List<Player> ReadyPlayers { get; set; } = new List<Player>();
         public List<string> RolesBank { get; set; } = new List<string>();
+        public NightPlayOrder[] NightPlayOrders { get; set; }
 
         public TimeProvider Time { get; set; } = new TimeProvider(); // TODO: Inject dependency?
         public GameState State { get; set; }
@@ -45,6 +47,19 @@ namespace WerewolfServer.Game
             CurrentNight = 0;
             LastTimer = Time.Now;
             State = new LobbyState(this);
+        }
+
+        public void InitGame(Character[] characters)
+        {
+            for (var i = 0; i < characters.Length; i++)
+            {
+                Players[i].AttachCharacter(characters[i]);
+            }
+
+            NightPlayOrders = Players
+                .Select(p => p.Character.NightOrder)
+                .Where(o => o != NightPlayOrder.NoPriority)
+                .ToArray();
         }
 
         public void Timer()

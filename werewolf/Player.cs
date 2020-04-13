@@ -10,7 +10,12 @@ namespace WerewolfServer.Game
         public Character Character { get; set; }
         public GameRoom Game { get; set; }
         public PlaySession Session { get; private set; }
+        
+        // Returns true if the player has a session (that might persist some time after the player has disconnected)
         public bool IsConnected => Session != null;
+
+        // Returns true if the player is online (will become false the second the user disconnects)
+        public bool IsOnline => IsConnected && Session.IsOnline;
 
         public Player() { }
 

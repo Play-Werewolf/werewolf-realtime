@@ -112,7 +112,7 @@ namespace WerewolfServer.Game
                 throw new InvalidOperationException("Role constraint failed");
             }
 
-            return town.OrderBy(x => Rand.Random.Next()).ToArray();
+            return town.OrderBy(x => Rand.Random.Next()).ToArray(); // TODO: Promote werewolf to AWW if there isn't any
         }
     }
 }

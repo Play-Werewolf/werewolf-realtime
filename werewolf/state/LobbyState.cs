@@ -31,16 +31,13 @@ namespace WerewolfServer.Game
             {
                 RoleGenerator_ x = new RoleGenerator_();
                 var characters = x.GenerateTown(Game.RolesBank.ToArray());
-
-                for (var i = 0; i < characters.Length; i++)
-                {
-                    Game.Players[i].AttachCharacter(characters[i]);
-                }
+                Game.InitGame(characters);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("Exception: {0}", ex);
                 KeepState();
+                Game.ReadyPlayers.Remove(Game.Players[0]);
                 // TODO: Send state update for failure
             }
         }

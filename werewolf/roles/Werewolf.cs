@@ -6,6 +6,7 @@ namespace WerewolfServer.Game
     {
         public override FortuneTellerResult FortuneTellerResult => FortuneTellerResult.Evil;
         public override Alignment Alignment => Alignment.Evil;
+        public override NightPlayOrder NightOrder => NightPlayOrder.Werewolves;
         
         private void PromoteToAlpha()
         {

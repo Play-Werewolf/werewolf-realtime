@@ -2,24 +2,19 @@ namespace WerewolfServer.Game
 {
     public class GameInitState : TimedState
     {
-        public override GameState NextGamestate => new RolesLotState(Game); // TODO
-        public GameInitState(GameRoom game) : base(game, 10) { }
+        public override GameState NextGamestate => new RolesLotState(Game);
+        public GameInitState(GameRoom game) : base(game, 5) { }
     }
 
     public class RolesLotState : TimedState
     {
-        public override GameState NextGamestate => null; // TODO
+        public override GameState NextGamestate => new NightTransitionState(Game);
         public RolesLotState(GameRoom game) : base(game, 10) { }
-
-        public override void OnStart()
-        {
-            // TODO: Shuffle roles for game
-        }
     }
 
     public class NightTransitionState : TimedState
     {
-        public override GameState NextGamestate => null; // TODO
+        public override GameState NextGamestate => Game.Config.ConcurrentNight ? (GameState)new ConcurrentNightState(Game) : new SeparatedNightState(Game);
         public NightTransitionState(GameRoom game) : base(game, 5) { }
     }
 

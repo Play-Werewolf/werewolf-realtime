@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -6,7 +5,7 @@ namespace WerewolfServer.Game
 {
     public struct Message
     {
-        public string Content {get;set;}
+        public string Content { get; set; }
 
         public Message(string content)
         {
@@ -21,11 +20,13 @@ namespace WerewolfServer.Game
 
     public class NightAction
     {
-        public static NightAction Empty => new BooleanAction(false);
+        public static NightAction Empty => new EmptyAction();
         public virtual bool ShouldAct => false;
         public virtual Player FirstTarget => null;
         public virtual Player SecondTarget => null;
     }
+
+    public class EmptyAction : NightAction { }
 
     public class BooleanAction : NightAction
     {
@@ -48,7 +49,7 @@ namespace WerewolfServer.Game
 
         public override bool ShouldAct => target != null;
         public override Player FirstTarget => target;
-        public override Player SecondTarget => target;
+        public override Player SecondTarget => null;
     }
 
     public class BinaryAction : NightAction
@@ -67,14 +68,16 @@ namespace WerewolfServer.Game
 
     public class Night
     {
-        public List<Attack> Attacks {get;set;} = new List<Attack>();
-        public List<Defense> Defenses {get;set;} = new List<Defense>();
-        public NightAction Action {get;set;} = NightAction.Empty;
-        public List<Message> Messages {get;set;} = new List<Message>();
-        public List<Player> VisitedBy {get;set;} = new List<Player>();
+        public List<Attack> Attacks { get; set; } = new List<Attack>();
+        public List<Defense> Defenses { get; set; } = new List<Defense>();
+        public NightAction Action { get; set; } = NightAction.Empty;
+        public List<Message> Messages { get; set; } = new List<Message>();
+        public List<Player> VisitedBy { get; set; } = new List<Player>();
 
         private Character _character;
         private Player player => _character.Player; // TODO: That's not a good way to do that
+
+        public bool HasPlayed => !(Action is EmptyAction);
 
         public Night(Character character)
         {
@@ -96,14 +99,14 @@ namespace WerewolfServer.Game
             Messages.Add(message);
         }
 
-        public void AddAttack(Attack attack, bool addVisit=false)
+        public void AddAttack(Attack attack, bool addVisit = false)
         {
             Attacks.Add(attack);
             if (addVisit)
                 AddVisit(attack.Attacker);
         }
 
-        public void AddDefense(Defense defense, bool addVisit=false)
+        public void AddDefense(Defense defense, bool addVisit = false)
         {
             Defenses.Add(defense);
             if (addVisit)
@@ -118,7 +121,7 @@ namespace WerewolfServer.Game
         public void CalculateResults()
         {
             Power attack = Attacks.DefaultIfEmpty().Max(a => a.Power);
-            
+
             if (attack <= player.Character.BaseDefense)
             {
                 return;
@@ -137,7 +140,7 @@ namespace WerewolfServer.Game
                     player.Character.SendMessage("You were " + a.Description);
 
                 player.Character.Die();
-                
+
                 foreach (var a in Attacks)
                     a.Attacker?.Character.OnAttackSuccess(player);
                 foreach (var d in Defenses)

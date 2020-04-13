@@ -4,5 +4,6 @@ namespace WerewolfServer.Game
     {
         public override FortuneTellerResult FortuneTellerResult => FortuneTellerResult.Good;
         public override Alignment Alignment => Alignment.Good;
+        public override NightPlayOrder NightOrder => NightPlayOrder.NoPriority;
     }
 }

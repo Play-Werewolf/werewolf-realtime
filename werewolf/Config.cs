@@ -5,6 +5,7 @@ namespace WerewolfServer.Game
     public class GameConfig
     {
         public int MinPlayers { get; set; } = 5;
+        public bool ConcurrentNight { get; set; } = false;
 
 
 
