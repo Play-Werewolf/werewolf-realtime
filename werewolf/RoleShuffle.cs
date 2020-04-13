@@ -20,9 +20,9 @@ namespace WerewolfServer.Game
     {
         public string Name { get; set; }
         public DisplayColor Color { get; set; }
-        public Character[] Possibilities { get; set; }
+        public Type[] Possibilities { get; set; }
 
-        public Generator(string name, DisplayColor color, params Character[] characters)
+        public Generator(string name, DisplayColor color, params Type[] characters)
         {
             Name = name;
             Color = color;
@@ -35,28 +35,28 @@ namespace WerewolfServer.Game
         public Dictionary<string, Generator> Generators { get; set; } = new Dictionary<string, Generator>
         {
             ["villager"]
-                = new Generator("Villager", DisplayColor.Green, new Villager()),
+                = new Generator("Villager", DisplayColor.Green, typeof(Villager)),
 
             ["healer"]
-                = new Generator("Healer", DisplayColor.Green, new Healer()),
+                = new Generator("Healer", DisplayColor.Green, typeof(Healer)),
 
             ["fortune_teller"]
-                = new Generator("Fortune Teller", DisplayColor.Green, new FortuneTeller()),
+                = new Generator("Fortune Teller", DisplayColor.Green, typeof(FortuneTeller)),
 
             ["werewolf"]
-                = new Generator("Werewolf", DisplayColor.Red, new Werewolf()),
+                = new Generator("Werewolf", DisplayColor.Red, typeof(Werewolf)),
 
             ["alpha_werewolf"]
-                = new Generator("Alpha Werewolf", DisplayColor.Red, new AlphaWerewolf()),
+                = new Generator("Alpha Werewolf", DisplayColor.Red, typeof(AlphaWerewolf)),
 
             ["random"]
                 = new Generator("♦ Random ♦", DisplayColor.Rainbow,
-                    new Villager(),
-                    new Healer(),
-                    new FortuneTeller(),
-                    new Priest(),
-                    new Werewolf(),
-                    new AlphaWerewolf()
+                    typeof(Villager),
+                    typeof(Healer),
+                    typeof(FortuneTeller),
+                    typeof(Priest),
+                    typeof(Werewolf),
+                    typeof(AlphaWerewolf)
                 )
         };
 
@@ -65,12 +65,12 @@ namespace WerewolfServer.Game
             [typeof(AlphaWerewolf)] = 1,
         };
 
-        IEnumerable<Character> ApplyLimits(IEnumerable<Character> origin, Dictionary<Type, int> occurrences)
+        IEnumerable<Type> ApplyLimits(IEnumerable<Type> origin, Dictionary<Type, int> occurrences)
         {
             return origin.Where(c => 
-                !occurrences.ContainsKey(c.GetType()) ||
-                !Limits.ContainsKey(c.GetType()) ||
-                occurrences[c.GetType()] < Limits[c.GetType()]);
+                !occurrences.ContainsKey(c) ||
+                !Limits.ContainsKey(c) ||
+                occurrences[c] < Limits[c]);
         }
 
         public Character[] GenerateTown(params string[] roles)
@@ -89,7 +89,8 @@ namespace WerewolfServer.Game
                 foreach (var g in generators)
                 {
                     var possibilities = ApplyLimits(g.Possibilities, occurrences).ToArray();
-                    var character = possibilities[Rand.Random.Next(possibilities.Length)];
+                    var type = possibilities[Rand.Random.Next(possibilities.Length)];
+                    var character = (Character)Activator.CreateInstance(type);
                     
                     if (occurrences.ContainsKey(character.GetType()))
                     {

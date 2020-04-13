@@ -1,3 +1,5 @@
+using System;
+
 using WerewolfServer.Platform;
 
 namespace WerewolfServer.Game

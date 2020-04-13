@@ -16,7 +16,6 @@ namespace WerewolfServer.Game
                     return new DayTransitionState(Game);
                 }
 
-                Console.WriteLine("Switching back to night " + Index + 1);
                 return new SeparatedNightState(Game, Index + 1);
             }
         }
@@ -40,7 +39,6 @@ namespace WerewolfServer.Game
 
         public SeparatedNightState(GameRoom game, int index = 0) : base(game)
         {
-            Console.WriteLine("Initialized new SNS {0}", index);
             if (index >= game.NightPlayOrders.Length) // TODO: This should not stay the way it is (night without plays should be optimized out or not occur)
             {
                 ChangeState(new DayTransitionState(game));

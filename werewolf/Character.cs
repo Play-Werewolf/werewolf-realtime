@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 
 namespace WerewolfServer.Game
@@ -62,7 +63,7 @@ namespace WerewolfServer.Game
 #else
         public override string ToString()
         {
-            return string.Format("{0} ({1})", GetType().Name, Alive ? "alive" : "dead");
+            return string.Format("{0} {1} ({2})", GetType().Name, Player.Name, Alive ? "alive" : "dead");
         }
 #endif
 

@@ -101,6 +101,7 @@ namespace WerewolfServer.Game
 
         public void StartNight()
         {
+            CurrentNight++;
             foreach (var p in Players.Prioritized())
                 p.Character.OnBeforeNight();
 
@@ -145,8 +146,9 @@ namespace WerewolfServer.Game
                 if (p.Character.DeathNight != CurrentNight)
                     continue;
 
-                callouts.Add("We found " + p + ", dead in their house tonight");
+                callouts.Add("We found " + p.Name + ", dead in their house tonight");
                 callouts.Add(p.Character.FormatDeathMessage());
+                callouts.Add("Rest in peace, " + p.Name);
             }
 
             return callouts.ToArray();

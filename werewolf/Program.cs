@@ -8,8 +8,10 @@ namespace WerewolfServer.Game
         static void Main(string[] args)
         {
             var game = new GameRoom();
-            var p1 = new Player();
-            var p2 = new Player();
+            var p1 = new Player("", "George", "");
+            var p2 = new Player("", "Amitmeat", "");
+            var p3 = new Player("", "Jerome", "");
+            var p4 = new Player("", "Ahmad", "");
 
             game.Config.MinPlayers = 2;
 
@@ -17,11 +19,17 @@ namespace WerewolfServer.Game
 
             game.AddPlayer(p1);
             game.AddPlayer(p2);
+            game.AddPlayer(p3);
+            game.AddPlayer(p4);
 
             game.PlayerReady(p1);
             game.PlayerReady(p2);
+            game.PlayerReady(p3);
+            game.PlayerReady(p4);
 
             game.RolesBank.Add("werewolf");
+            game.RolesBank.Add("villager");
+            game.RolesBank.Add("villager");
             game.RolesBank.Add("villager");
 
             game.Timer();
@@ -50,7 +58,6 @@ namespace WerewolfServer.Game
             Console.WriteLine(game.State);
 
             foreach (var i in game.NightPlayOrders)
-            Console.WriteLine(">>> " + i.ToString());
 
             ww.Character.SetAction(new UnaryAction(villager));
 
@@ -62,6 +69,27 @@ namespace WerewolfServer.Game
             game.Time.AddOffset(new TimeSpan(0, 0, 3));
             game.Timer();
 
+            Console.WriteLine(game.State);
+
+            game.Time.AddOffset(new TimeSpan(0, 0, 5));
+            game.Timer();
+
+            Console.WriteLine(game.State);
+
+            for (int i = 0; i < 5; i++)
+            {
+                game.Time.AddOffset(new TimeSpan(0, 0, 10));
+                game.Timer();
+            }
+
+            Console.WriteLine(game.State);
+
+            foreach (var player in game.Players)
+            {
+                player.VoteToKill(ww);
+            }
+
+            game.Timer();
             Console.WriteLine(game.State);
         }
     }

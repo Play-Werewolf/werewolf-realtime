@@ -5,7 +5,7 @@ namespace WerewolfServer.Game
 {
     public class LobbyState : GameState
     {
-        public LobbyState(GameRoom game) : base(game) {}
+        public LobbyState(GameRoom game) : base(game) { }
 
         public override void OnStart()
         {
@@ -33,9 +33,8 @@ namespace WerewolfServer.Game
                 var characters = x.GenerateTown(Game.RolesBank.ToArray());
                 Game.InitGame(characters);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine("Exception: {0}", ex);
                 KeepState();
                 Game.ReadyPlayers.Remove(Game.Players[0]);
                 // TODO: Send state update for failure

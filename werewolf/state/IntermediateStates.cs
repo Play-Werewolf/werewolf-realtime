@@ -1,3 +1,7 @@
+using System;
+using System.Linq;
+using System.Collections.Generic;
+
 namespace WerewolfServer.Game
 {
     public class GameInitState : TimedState
@@ -16,17 +20,59 @@ namespace WerewolfServer.Game
     {
         public override GameState NextGamestate => Game.Config.ConcurrentNight ? (GameState)new ConcurrentNightState(Game) : new SeparatedNightState(Game);
         public NightTransitionState(GameRoom game) : base(game, 5) { }
+
+        public override void OnStart()
+        {
+            Game.StartNight();
+        }
     }
 
     public class DayTransitionState : TimedState
     {
-        public override GameState NextGamestate => null; // TODO
+        public override GameState NextGamestate => new DeathAnnounceState(Game);
         public DayTransitionState(GameRoom game) : base(game, 5) { }
+
+        public override void OnStart()
+        {
+            Game.ProcessNight();
+        }
     }
 
     public class ExecutionState : TimedState
     {
         public override GameState NextGamestate => new NightTransitionState(Game);
-        public ExecutionState(GameRoom game) : base(game, 10) { }
+        public ExecutionState(GameRoom game) : base(game, 7) { }
+    }
+
+    public class DeathAnnounceState : GameState
+    {
+        List<string> Callouts;
+        string CurrentCall = null;
+        float Timer = -1;
+
+        public DeathAnnounceState(GameRoom game) : base(game)
+        {
+            Callouts = game.MakeDeathLog().ToList();
+        }
+
+        public override void OnTimer(float timeDelta)
+        {
+            Timer -= timeDelta;
+            if (Timer > 0)
+                return;
+
+
+            if (Callouts.Count == 0)
+            {
+                ChangeState(new DiscussionState(Game));
+                return;
+            }
+
+            CurrentCall = Callouts[0];
+            Callouts.RemoveAt(0);
+            Timer = 0.5f * CurrentCall.Split(new char[] { ' ' }).Length;
+
+            Console.WriteLine(">>> " + CurrentCall);
+        }
     }
 }
