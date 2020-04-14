@@ -46,9 +46,15 @@ namespace WerewolfServer.Network
             };
         }
 
-        public void CleanupSessions()
+        public void DoCleanup()
         {
-            DateTime threshold = DateTime.Now - new TimeSpan(0, 2, 0);
+            CleanupSessions();
+            Rooms.CleanupStaleGames();
+        }
+
+        void CleanupSessions()
+        {
+            DateTime threshold = DateTime.Now - new TimeSpan(0, 0, 10); // TODO: Fix
             List<NetworkSession> toDelete = new List<NetworkSession>();
             foreach (var ses in Sessions.Sessions)
             {
@@ -60,6 +66,8 @@ namespace WerewolfServer.Network
 
             foreach (var ses in toDelete)
             {
+                ses.Close();
+
                 Sessions.RemoveSession(ses);
             }
         }

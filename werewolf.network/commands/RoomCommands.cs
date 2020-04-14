@@ -1,3 +1,5 @@
+using System;
+
 namespace WerewolfServer.Network
 {
     public class RoomCommand : BaseCommand
@@ -24,7 +26,7 @@ namespace WerewolfServer.Network
 
         public override void OnCommand()
         {
-            var game = sender.Manager.Rooms.CreateGame();
+            var game = sender.Manager.Rooms.CreateGame(new NetworkGameUpdater());
             sender.Session.InitPlayer();
             game.AddPlayer(sender.Session.Player);
         }
@@ -41,7 +43,7 @@ namespace WerewolfServer.Network
         public override void OnCommand()
         {
             sender.Session.Player.Game.RemovePlayer(sender.Session.Player);
-            sender.Session.DetachPlayer(); // Removing the player object
+            sender.Session.KillPlayer(); // Removing the player object
         }
     }
 
@@ -57,7 +59,7 @@ namespace WerewolfServer.Network
 
         public override void OnCommand()
         {
-            if (sender.Manager.Rooms.Games.ContainsKey(message.Args[0]))
+            if (!sender.Manager.Rooms.Games.ContainsKey(message.Args[0]))
             {
                 throw new Error("Room not found");
             }
@@ -65,7 +67,15 @@ namespace WerewolfServer.Network
             sender.Session.InitPlayer();
             
             var game = sender.Manager.Rooms.Games[message.Args[0]];
-            game.AddPlayer(sender.Session.Player);
+
+            try
+            {
+                game.AddPlayer(sender.Session.Player);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new Error(ex.Message);
+            }
         }
     }
 }

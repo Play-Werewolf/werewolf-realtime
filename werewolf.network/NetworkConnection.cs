@@ -48,6 +48,9 @@ namespace WerewolfServer.Network
             RegisterCommand<CreateRoomCommand>();
             RegisterCommand<JoinRoomCommand>();
             RegisterCommand<LeaveRoomCommand>();
+
+            RegisterCommand<ReadyCommand>();
+            RegisterCommand<NotReadyCommand>();
         }
 
         public override string ToString()

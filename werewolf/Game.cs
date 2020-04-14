@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -5,7 +6,14 @@ using WerewolfServer.Platform;
 
 namespace WerewolfServer.Game
 {
-    using System;
+    // Interface for sending game updates
+    public interface IGameUpdater
+    {
+        void SendGameUpdate(GameRoom game, IEnumerable<Player> targets = null);
+        void SendStateUpdate(GameRoom game, IEnumerable<Player> targets = null);
+        void SendPlayerUpdate(Player player, IEnumerable<Player> targets = null);
+        void SendTimerUpdate(float time, IEnumerable<Player> targets = null);
+    }
 
     public class GameRoom
     {
@@ -24,14 +32,18 @@ namespace WerewolfServer.Game
 
         public string Id { get; private set; }
 
-        public GameRoom(string id)
+        IGameUpdater _Updater;
+
+        public GameRoom(string id, IGameUpdater updater)
         {
             Id = id;
             Reset();
             Config = new GameConfig();
+
+            _Updater = updater;
         }
 
-        public GameRoom() : this("") { }
+        public GameRoom(IGameUpdater updater) : this("", updater) { }
 
         public override string ToString()
         {
@@ -69,22 +81,43 @@ namespace WerewolfServer.Game
         {
             var now = Time.Now;
             var newState = State.TriggerTimer((float)(now - LastTimer).TotalSeconds);
-            if (newState != State)
+            if (newState != State || State.RequestUpdate)
             {
-                State = newState; // TODO: Send state update to clients
+                State = newState;
+                SendStateUpdate();
             }
 
             LastTimer = now;
         }
 
+        public void SendStateUpdate()
+        {
+            _Updater?.SendStateUpdate(this);
+        }
+
         public void AddPlayer(Player p)
         {
+            if (!(State is LobbyState) && !(State is GameOverState))
+                throw new InvalidOperationException("Cannot join room in the middle of a game");
+
             if (p == null)
             {
                 throw new InvalidOperationException("Cannot insert null player to a gameroom");
             }
             p.Game = this;
             this.Players.Add(p);
+
+            _Updater?.SendGameUpdate(this);
+            _Updater?.SendStateUpdate(this, new[] { p }); // Send state to new player
+        }
+
+        public void PlayerReconnected(Player p)
+        {
+            if (!Players.Contains(p))
+                return;
+
+            _Updater?.SendGameUpdate(this, new[] { p });
+            _Updater?.SendStateUpdate(this, new[] { p });
         }
 
         public void RemovePlayer(Player player)
@@ -100,6 +133,8 @@ namespace WerewolfServer.Game
 
             if (this.Players.Contains(player))
                 this.Players.Remove(player);
+
+            _Updater?.SendGameUpdate(this);
         }
 
         public void StartNight()
@@ -159,18 +194,28 @@ namespace WerewolfServer.Game
 
         public void PlayerReady(Player player)
         {
-            if (this.ReadyPlayers.Contains(player))
+            if (!(State is LobbyState))
                 return;
 
-            this.ReadyPlayers.Add(player);
+            if (ReadyPlayers.Contains(player))
+                return;
+
+            ReadyPlayers.Add(player);
+
+            SendStateUpdate();
         }
 
         public void PlayerNotReady(Player player)
         {
+            if (!(State is LobbyState))
+                return;
+
             if (!this.ReadyPlayers.Contains(player))
                 return;
 
             this.ReadyPlayers.Remove(player);
+
+            SendStateUpdate();
         }
 
         public bool IsGameOver()

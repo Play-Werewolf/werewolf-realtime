@@ -66,6 +66,11 @@ namespace WerewolfServer.Game
         public void DetachSession()
         {
             Session = null;
+
+            if (Game?.State is LobbyState)
+            {
+                Game.RemovePlayer(this);
+            }
         }
 
         public void ChangeRole(Character c)

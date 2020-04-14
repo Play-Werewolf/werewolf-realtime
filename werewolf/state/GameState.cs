@@ -2,7 +2,7 @@ using System;
 
 namespace WerewolfServer.Game
 {
-    public class GameState
+    public abstract class GameState
     {
         protected GameRoom Game { get; set; }
 
@@ -11,11 +11,21 @@ namespace WerewolfServer.Game
             Game = game;
         }
 
+        public virtual object Serialize()
+        {
+            return new
+            {
+                State = GetType().Name,
+            };
+        }
+
         public GameState NextState {get; private set;}
+        public bool RequestUpdate { get; private set; }
 
         public GameState TriggerTimer(float timeDelta)
         {
             NextState = null;
+            RequestUpdate = false;
             OnTimer(timeDelta);
 
             if (NextState != null)
@@ -35,6 +45,11 @@ namespace WerewolfServer.Game
         protected void ChangeState(GameState newState)
         {
             NextState = newState;
+        }
+
+        protected void SendUpdate()
+        {
+            RequestUpdate = true;
         }
 
         protected void KeepState()

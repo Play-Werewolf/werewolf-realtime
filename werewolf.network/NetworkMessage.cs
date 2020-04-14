@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using WerewolfServer.Game;
+
 namespace WerewolfServer.Network
 {
-    public class NetworkMessage
+    public class NetworkMessage : GameMessage
     {
         string[] parts;
 
-        public string Type => parts[0];
         public IEnumerable<string> IterArgs
         {
             get
@@ -17,7 +18,9 @@ namespace WerewolfServer.Network
                     yield return parts[i];
             }
         }
-        public string[] Args => IterArgs.ToArray();
+
+        public override string Type => parts[0];
+        public override string[] Args => IterArgs.ToArray();
 
         public NetworkMessage(string raw)
         {
@@ -31,7 +34,7 @@ namespace WerewolfServer.Network
             args.CopyTo(parts, 1);
         }
 
-        public string Compile()
+        public override string Compile()
         {
             return String.Join('\x00', parts);
         }

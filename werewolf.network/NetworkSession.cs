@@ -33,12 +33,19 @@ namespace WerewolfServer.Network
             return new Player(Id, LoginState.Nickname, "TODO:implement avatars");
         }
 
+        public override void EmitMessage(GameMessage msg)
+        {
+            Connection?.Socket?.Send(msg.Compile());
+        }
+
         public void InitPlayer()
         {
             if (Player != null)
-                DetachPlayer();
+                KillPlayer();
 
             AttachPlayer(CreatePlayer());
+
+            Console.WriteLine("Init player called. Player: " + Player);
         }
 
         public NetworkSession(NetworkConnection connection, LoginState state)
@@ -49,9 +56,13 @@ namespace WerewolfServer.Network
 
         public void Disconnect()
         {
-            DetachPlayer();
             Connection = null;
             DisconnectionTime = DateTime.Now;
+        }
+
+        public void Close()
+        {
+            KillPlayer();
         }
 
         public override string ToString()

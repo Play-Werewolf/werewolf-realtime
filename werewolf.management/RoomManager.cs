@@ -16,14 +16,14 @@ namespace WerewolfServer.Management
             Games = new Dictionary<string, GameRoom>();
         }
 
-        public void CheckStaleGames()
+        public void CleanupStaleGames()
         {
             foreach (var key in Games.Keys)
             {
-                if (Games[key].Players.Where(p => p.IsConnected).Count() == 0)
-                {
-                    Games.Remove(key);
-                }
+                if (Games[key].Players.Where(p => p.IsConnected).Count() != 0)
+                    continue;
+
+                Games.Remove(key);
             }
         }
 
@@ -42,10 +42,10 @@ namespace WerewolfServer.Management
             return id;
         }
 
-        public GameRoom CreateGame()
+        public GameRoom CreateGame(IGameUpdater updater)
         {
             string id = GenerateID();
-            Games[id] = new GameRoom(id);
+            Games[id] = new GameRoom(id, updater);
             return Games[id];
         }
     }

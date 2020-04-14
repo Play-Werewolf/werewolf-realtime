@@ -42,7 +42,7 @@ namespace WerewolfServer.Game
                 Attacker = this,
                 Target = Night.Action.FirstTarget,
                 Power = Power.Basic,
-                Description = "attacked by a werewolf",
+                Description = "were attacked by a werewolf",
             }, addVisit: true);
         }
     }

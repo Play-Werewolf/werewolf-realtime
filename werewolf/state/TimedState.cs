@@ -5,6 +5,15 @@ namespace WerewolfServer.Game
 
         public abstract GameState NextGamestate { get; }
 
+        public override object Serialize()
+        {
+            return new
+            {
+                State = GetType().Name,
+                Timer = TimeLeft,
+            };
+        }
+
         float TimeLeft {get;set;}
 
         public TimedState(GameRoom game, float seconds)

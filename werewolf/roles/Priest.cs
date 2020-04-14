@@ -23,7 +23,7 @@ namespace WerewolfServer.Game
                 Attacker = this,
                 Target = Night.Action.FirstTarget,
                 Power = Power.Basic,
-                Description = "slain by a holy priest"
+                Description = "were slain by a holy priest"
             });
 
             if (Night.Action.FirstTarget.Character.Alignment == Alignment.Good)
@@ -33,7 +33,7 @@ namespace WerewolfServer.Game
                     Attacker = null,
                     Target = this,
                     Power = Power.Basic,
-                    Description = "punished by a devine power"
+                    Description = "were punished by a devine power"
                 });
             }
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace WerewolfServer.Game
@@ -13,6 +14,8 @@ namespace WerewolfServer.Game
                 Game.ReadyPlayers = new List<Player>();
 
             Game.ReadyPlayers.Clear();
+
+            Game.Players.RemoveAll(player => !player.IsOnline);
         }
 
         public override void OnTimer(float timeDelta)
@@ -39,6 +42,15 @@ namespace WerewolfServer.Game
                 Game.ReadyPlayers.Remove(Game.Players[0]);
                 // TODO: Send state update for failure
             }
+        }
+
+        public override object Serialize()
+        {
+            return new
+            {
+                State = GetType().Name,
+                ReadyPlayers = Game.ReadyPlayers.Select(p => p.Id).ToArray(),
+            };
         }
     }
 }

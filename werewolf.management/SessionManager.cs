@@ -28,7 +28,7 @@ namespace WerewolfServer.Management
                 return;
 
             if (session.Player != null)
-                session.DetachPlayer();
+                session.KillPlayer();
 
             Sessions.Remove(session);
         }
