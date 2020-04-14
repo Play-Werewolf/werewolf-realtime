@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
-namespace WerewolfServer.Game
+using WerewolfServer.Game;
+
+namespace WerewolfServer.Display
 {
     class Program
     {
         static void Main(string[] args)
         {
-            var game = new GameRoom();
+            var game = new GameRoom(null);
+            
             var p1 = new Player("", "George", "");
             var p2 = new Player("", "Amitmeat", "");
             var p3 = new Player("", "Jerome", "");
@@ -38,7 +43,7 @@ namespace WerewolfServer.Game
 
             Console.WriteLine(p1.Character);
             Console.WriteLine(p2.Character);
-            
+
             game.Time.AddOffset(new TimeSpan(0, 0, 5));
             game.Timer();
 
@@ -59,7 +64,7 @@ namespace WerewolfServer.Game
 
             foreach (var i in game.NightPlayOrders)
 
-            ww.Character.SetAction(new UnaryAction(villager));
+                ww.Character.SetAction(new UnaryAction(villager));
 
             game.Time.AddOffset(new TimeSpan(0, 0, 29));
             game.Timer();

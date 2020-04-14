@@ -19,15 +19,12 @@ namespace WerewolfServer.Game
 
         public bool AttachPlayer(Player player)
         {
-            if (player != null)
-                return false;
-
             Player = player;
             Player.AttachSession(this);
             return true;
         }
 
-        public void DetachPlayer()
+        public void KillPlayer()
         {
             if (Player == null)
                 return;
@@ -37,5 +34,6 @@ namespace WerewolfServer.Game
         }
 
         public abstract Player CreatePlayer();
+        public abstract void EmitMessage(GameMessage msg);
     }
 }

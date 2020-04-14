@@ -62,6 +62,15 @@ namespace WerewolfServer.Game
                 ChangeState(new GameOverState(Game));
             }
         }
+
+        public override object Serialize()
+        {
+            return new
+            {
+                State = GetType().Name,
+                PlayerOnStand = Game.PlayerOnStand.Id,
+            };
+        }
     }
 
     public class DeathAnnounceState : GameState
@@ -97,6 +106,15 @@ namespace WerewolfServer.Game
             Timer = 0.5f * CurrentCall.Split(new char[] { ' ' }).Length;
 
             Console.WriteLine(">>> " + CurrentCall);
+        }
+
+        public override object Serialize()
+        {
+            return new
+            {
+                State = GetType().Name,
+                Callout = CurrentCall
+            };
         }
     }
 

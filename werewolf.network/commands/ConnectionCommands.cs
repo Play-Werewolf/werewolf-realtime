@@ -73,6 +73,11 @@ namespace WerewolfServer.Network
 
             sender.Login(session);
             sender.SendRoomStatus();
+
+            if (sender.Session?.Player?.Game != null)
+            {
+                sender.Session.Player.Game.PlayerReconnected(sender.Session.Player);
+            }
         }
     }
 }

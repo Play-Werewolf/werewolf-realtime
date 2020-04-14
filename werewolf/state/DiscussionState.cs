@@ -8,6 +8,17 @@ namespace WerewolfServer.Game
         public override GameState NextGamestate => new NightTransitionState(Game);
         public DiscussionState(GameRoom game) : base(game, 2 * 60 + 30) { }
 
+        public override object Serialize()
+        {
+            return new
+            {
+                State = GetType().Name,
+                Votes = Game.Players
+                    .Where(p => p.VotesAgainst != null)    
+                    .Select(p => p.VotesAgainst?.Id).ToArray()
+            };
+        }
+
         public override void OnStart()
         {
             Game.PlayerOnStand = null;
@@ -32,6 +43,16 @@ namespace WerewolfServer.Game
     public abstract class JudgementState : TimedState
     {
         public GameState BaseState;
+
+        public override object Serialize()
+        {
+            return new
+            {
+                State = GetType().Name,
+                PlayerOnStand = Game.PlayerOnStand.Id,
+            };
+        }
+
         public JudgementState(GameRoom room, float timer, GameState baseState)
             : base(room, timer)
         {
@@ -74,6 +95,16 @@ namespace WerewolfServer.Game
 
                 return BaseState; // Go back to discussion
             }
+        }
+
+        public override object Serialize()
+        {
+            return new
+            {
+                State = GetType().Name,
+                PlayerOnStand = Game.PlayerOnStand.Id,
+                Votes = Game.Players.Select(p => new { p.Id, p.TrialVote }).ToArray()
+            };
         }
 
         public VoteShowState(GameRoom game, GameState state) : base(game, 10, state) { }

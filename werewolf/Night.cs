@@ -121,6 +121,17 @@ namespace WerewolfServer.Game
 
         public void CalculateResults()
         {
+            if (!player.IsOnline)
+            {
+                player.Character.Night.AddAttack(new Attack
+                {
+                    Attacker = null,
+                    Target = player.Character,
+                    Power = Power.Unstoppable,
+                    Description = "have commited suicide",
+                });
+            }
+
             Power attack = Attacks.DefaultIfEmpty().Max(a => a.Power);
 
             if (attack <= player.Character.BaseDefense)
@@ -138,7 +149,7 @@ namespace WerewolfServer.Game
             if (attack > defense)
             {
                 foreach (var a in Attacks)
-                    player.Character.SendMessage("You were " + a.Description);
+                    player.Character.SendMessage("You " + a.Description);
 
                 player.Character.Die();
 

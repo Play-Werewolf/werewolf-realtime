@@ -19,6 +19,7 @@ namespace WerewolfServer.Game
                 return new SeparatedNightState(Game, Index + 1);
             }
         }
+
         int Index;
         public GoodNightState(GameRoom game, int index) : base(game, 3)
         {
@@ -67,6 +68,16 @@ namespace WerewolfServer.Game
         public override string ToString()
         {
             return string.Format("{0} ({1})", base.ToString(), Index);
+        }
+
+        public override object Serialize()
+        {
+            return new
+            {
+                State = GetType().Name,
+                Index = Index,
+                NightOrder = Game.NightPlayOrders[Index],
+            };
         }
     }
 

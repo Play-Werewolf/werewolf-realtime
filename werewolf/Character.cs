@@ -10,7 +10,6 @@ namespace WerewolfServer.Game
         BodyGuard,
         FortuneTeller,
         Priest,
-        Finish,
         NoPriority // Never plays
     }
 
@@ -132,7 +131,7 @@ namespace WerewolfServer.Game
         public virtual string FormatDeathMessage()
         {
             var attacks = Night.Attacks;
-            var sb = new StringBuilder("They were apparently ");
+            var sb = new StringBuilder("They apparently ");
             for (int i = 0; i < attacks.Count; i++)
             {
                 if (i != 0)
