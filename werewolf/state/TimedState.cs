@@ -14,7 +14,7 @@ namespace WerewolfServer.Game
             };
         }
 
-        float TimeLeft {get;set;}
+        protected float TimeLeft {get;set;}
 
         public TimedState(GameRoom game, float seconds)
             : base(game)

@@ -23,7 +23,7 @@ namespace WerewolfServer.Game
         public List<Player> Players { get; set; } = new List<Player>();
         public Player PlayerOnStand { get; set; }
         public List<Player> ReadyPlayers { get; set; } = new List<Player>();
-        public List<string> RolesBank { get; set; } = new List<string>();
+        public List<string> RolesBank { get; set; } = new List<string>() { "werewolf", "villager" }; // TODO: Make this a bit more custom
         public NightPlayOrder[] NightPlayOrders { get; set; }
 
         public TimeProvider Time { get; set; } = new TimeProvider(); // TODO: Inject dependency?
@@ -38,8 +38,6 @@ namespace WerewolfServer.Game
         {
             Id = id;
             Reset();
-            Config = new GameConfig();
-
             _Updater = updater;
         }
 
@@ -60,6 +58,8 @@ namespace WerewolfServer.Game
             Players.Clear();
             CurrentNight = 0;
             LastTimer = Time.Now;
+
+            Config = new GameConfig();
             State = new LobbyState(this);
         }
 

@@ -11,7 +11,7 @@ namespace WerewolfServer.Display
     {
         static void Main(string[] args)
         {
-            var game = new GameRoom(new ConsoleJsonGameUpdater());
+            var game = new GameRoom(null);
             
             var p1 = new Player("", "George", "");
             var p2 = new Player("", "Amitmeat", "");

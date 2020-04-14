@@ -13,7 +13,9 @@ namespace WerewolfServer.Game
             return new
             {
                 State = GetType().Name,
-                Votes = Game.Players.Select(p => p.VotesAgainst.Id).ToArray()
+                Votes = Game.Players
+                    .Where(p => p.VotesAgainst != null)    
+                    .Select(p => p.VotesAgainst?.Id).ToArray()
             };
         }
 
