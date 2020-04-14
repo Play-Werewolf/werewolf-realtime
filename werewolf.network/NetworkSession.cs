@@ -35,7 +35,7 @@ namespace WerewolfServer.Network
 
         public override void EmitMessage(GameMessage msg)
         {
-            Connection?.Socket?.Send(msg.Compile());
+            Connection?.Send(msg);
         }
 
         public void InitPlayer()

@@ -71,5 +71,36 @@ namespace WerewolfServer.Network
                 Sessions.RemoveSession(ses);
             }
         }
+
+        public void WorkSingleThreadedly() // TODO: Consider porting to multi-threaded architecture to increase room capacity per WW instance
+        {
+            TimeSpan delta = new TimeSpan(0, 0, 0, 0, 300);
+            TimeSpan cleanupDelta = new TimeSpan(0, 0, 0, 5, 0);
+            DateTime nextTimer = DateTime.Now + delta;
+            DateTime nextCleanup = DateTime.Now + cleanupDelta;
+
+            while (true)
+            {
+                while (NetworkConnection.Messages.TryDequeue(out (NetworkConnection conn, NetworkMessage msg) result))
+                {
+                    result.conn.handlers[result.msg.Type].Init(result.conn, result.msg).ProcessCommand();
+                }
+
+                if (DateTime.Now > nextTimer)
+                {
+                    nextTimer = DateTime.Now + delta;
+                    foreach (var game in Rooms.Games.Values)
+                    {
+                        game.Timer();
+                    }
+                }
+
+                if (DateTime.Now > nextCleanup)
+                {
+                    nextCleanup = DateTime.Now + cleanupDelta;
+                    DoCleanup();
+                }
+            }
+        }
     }
 }

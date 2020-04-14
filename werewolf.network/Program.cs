@@ -10,13 +10,7 @@ namespace WerewolfServer.Network
         {
             manager = new NetworkManager();
             manager.Start();
-            while (true)
-            {
-                RenderAll();
-                // Console.ReadLine();
-                System.Threading.Thread.Sleep(500);
-                manager.DoCleanup();
-            }
+            manager.WorkSingleThreadedly();
         }
 
         static void RenderAll()
