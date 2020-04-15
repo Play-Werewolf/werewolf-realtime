@@ -39,6 +39,13 @@ namespace WerewolfServer.Game
             Character.Player = this; // One to one relationship between the player and the character
         }
 
+        public Player(Character player, PlaySession s)
+        {
+            Character = player;
+            Character.Player = this; // One to one relationship between the player and the character
+            Session = s;
+        }
+
         public void AttachCharacter(Character character)
         {
             if (Character != null)

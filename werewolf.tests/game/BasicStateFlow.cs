@@ -1,4 +1,5 @@
 using Xunit;
+using Xunit.Abstractions;
 using System;
 using System.Linq;
 using WerewolfServer.Game;
@@ -13,15 +14,22 @@ namespace WerewolfServer.Tests
         Player aww;
         Player ww;
         Player healer;
-        
+
+        private readonly ITestOutputHelper output;
+
+        public StateTests(ITestOutputHelper output)
+        {
+            this.output = output;
+        }
+
         private void Init()
         {
-            game = new GameRoom();
-            villager1 = new Player(new Villager());
-            villager2 = new Player(new Villager());
-            aww = new Player(new Werewolf());
-            ww = new Player(new AlphaWerewolf());
-            healer = new Player(new Healer());
+            game = new GameRoom("", null);
+            villager1 = new Player(new Villager(), new MockSession());
+            villager2 = new Player(new Villager(), new MockSession());
+            aww = new Player(new Werewolf(), new MockSession());
+            ww = new Player(new AlphaWerewolf(), new MockSession());
+            healer = new Player(new Healer(), new MockSession());
 
             game.Reset();
             game.AddPlayer(villager1);
@@ -51,6 +59,16 @@ namespace WerewolfServer.Tests
             game.RolesBank.Add("healer");
 
             game.Timer();
+
+            for(int i = 0; i < game.ReadyPlayers.Count; i++)
+            {
+                output.WriteLine("{0}", game.ReadyPlayers[i]);
+            }
+
+            output.WriteLine("{0}{1}{2}{3}", game.ReadyPlayers.Count, game.Players.Count, game, game.Players.Count <= game.RolesBank.Count);
+
+            output.WriteLine(game.State.ToString());
+
             Assert.True(game.State is GameInitState);
 
         }

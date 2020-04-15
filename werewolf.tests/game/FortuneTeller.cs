@@ -15,9 +15,9 @@ namespace WerewolfServer.Tests
 
         void Init()
         {
-            game = new GameRoom();
-            teller = new Player(new FortuneTeller());
-            alphaWerewolf = new Player(new AlphaWerewolf());
+            game = new GameRoom("", null);
+            teller = new Player(new FortuneTeller(), new MockSession());
+            alphaWerewolf = new Player(new AlphaWerewolf(), new MockSession());
             game.AddPlayer(teller);
             game.AddPlayer(alphaWerewolf);
         }

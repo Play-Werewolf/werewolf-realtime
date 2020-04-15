@@ -118,6 +118,9 @@ namespace WerewolfServer.Display
             game.Time.AddOffset(new TimeSpan(0, 0, 10));
             game.Timer();
             Console.WriteLine(game.State);
+        
         }
+
+
     }
 }

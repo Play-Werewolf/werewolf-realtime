@@ -1,4 +1,5 @@
 using Xunit;
+using Xunit.Abstractions;
 
 using WerewolfServer.Game;
 
@@ -11,14 +12,21 @@ namespace WerewolfServer.Tests
         Player ww;
         Player aww;
         Player h;
-        
+
+        private readonly ITestOutputHelper output;
+
+        public BaseTests(ITestOutputHelper output)
+        {
+            this.output = output;
+        }
+
         private void Init()
         {
-            game = new GameRoom();
-            c = new Player(new Villager());
-            ww = new Player(new Werewolf());
-            aww = new Player(new AlphaWerewolf());
-            h = new Player(new Healer());
+            game = new GameRoom("", null);
+            c = new Player(new Villager(), new MockSession());
+            ww = new Player(new Werewolf(), new MockSession());
+            aww = new Player(new AlphaWerewolf(), new MockSession());
+            h = new Player(new Healer(), new MockSession());
 
             game.Reset();
             game.AddPlayer(c);
@@ -89,7 +97,7 @@ namespace WerewolfServer.Tests
         [Fact]
         public void TestInitialAlphaWerewolfPromotion()
         {
-            game = new GameRoom();
+            game = new GameRoom("", null);
             ww = new Player(new Werewolf());
             game.AddPlayer(ww);
 
@@ -122,7 +130,7 @@ namespace WerewolfServer.Tests
                 Attacker=null,
                 Target=aww,
                 Power=Power.Unstoppable,
-                Description="taken by the grim reaper"
+                Description="were taken by the grim reaper"
             }, addVisit: false);
 
             game.ProcessNight();
@@ -138,7 +146,7 @@ namespace WerewolfServer.Tests
         [Fact]
         public void TestOnlyOnePromotion()
         {
-            game = new GameRoom();
+            game = new GameRoom("", null);
 
             aww = new Player(new Werewolf());
             ww = new Player(new Werewolf());

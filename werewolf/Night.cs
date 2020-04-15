@@ -17,6 +17,10 @@ namespace WerewolfServer.Game
         {
             return new Message(s);
         }
+        public override string ToString()
+        {
+            return string.Format("Message content: {0}", this.Content);
+        }
     }
 
     public class NightAction
