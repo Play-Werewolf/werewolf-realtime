@@ -60,15 +60,6 @@ namespace WerewolfServer.Tests
 
             game.Timer();
 
-            for(int i = 0; i < game.ReadyPlayers.Count; i++)
-            {
-                output.WriteLine("{0}", game.ReadyPlayers[i]);
-            }
-
-            output.WriteLine("{0}{1}{2}{3}", game.ReadyPlayers.Count, game.Players.Count, game, game.Players.Count <= game.RolesBank.Count);
-
-            output.WriteLine(game.State.ToString());
-
             Assert.True(game.State is GameInitState);
 
         }
@@ -135,8 +126,8 @@ namespace WerewolfServer.Tests
         {
             TestNightTransitionToSeparatedNightState();
 
-            Assert.Equal(game.NightPlayOrders[0].ToString(), "Werewolves");
-            Assert.Equal(game.NightPlayOrders[1].ToString(), "Healer");
+            Assert.Equal("Werewolves", game.NightPlayOrders[0].ToString());
+            Assert.Equal("Healer", game.NightPlayOrders[1].ToString());
 
             aww.Character.SetAction(new UnaryAction(villager1));
             game.Time.AddOffset(new TimeSpan(0, 0, 59));
@@ -155,22 +146,195 @@ namespace WerewolfServer.Tests
             Assert.True(game.State is DayTransitionState);
         }
 
-        // [Fact]
-        // public void TestConcurrentNightToDayTransitionState()
-        // {
-        //     TestNightTransitionToConcurrentNightState();
+         [Fact]
+         public void TestConcurrentNightToDayTransitionState()
+         {
+             TestNightTransitionToConcurrentNightState();
 
-        //     Assert.Equal(game.NightPlayOrders[2].ToString(), "Healer");
-        //     Assert.Equal(game.NightPlayOrders[0].ToString(), "Werewolves");
+            aww.Character.SetAction(new UnaryAction(villager1));
+            healer.Character.SetAction(new UnaryAction(villager1));
 
-        //     aww.Character.SetAction(new UnaryAction(villager1));
-        //     healer.Character.SetAction(new UnaryAction(villager1));
+            game.Time.AddOffset(new TimeSpan(0, 0, 59));
+            game.Timer();
 
-        //     game.Time.AddOffset(new TimeSpan(0, 0, 59));
-        //     game.Timer();
+            game.Time.AddOffset(new TimeSpan(0, 0, 3));
+            game.Timer();
 
-        //     Assert.True(game.State is DayTransitionState);
-        // }
+            Assert.True(game.State is DayTransitionState);
+        }
+
+        [Fact]
+        public void TestDayTransitionToDeathAnnounceState()
+        {
+            TestSeparatedNightToDayTransitionState();
+
+            game.Time.AddOffset(new TimeSpan(0, 0, 10));
+            game.Timer();
+
+            
+            Assert.True(game.State is DeathAnnounceState);
+        }
+
+        [Fact]
+        public void TestDeathAnnounceToGameOverState()
+        {
+            TestDayTransitionToDeathAnnounceState();
+
+            aww.Character.Die();
+            ww.Character.Die();
+
+            game.Time.AddOffset(new TimeSpan(0, 0, 10));
+            game.Timer();
+
+            Assert.True(game.State is GameOverState);
+        }
+
+        [Fact]
+        public void TestDeathAnnounceToDiscussionState()
+        {
+            TestDayTransitionToDeathAnnounceState();
+
+            Assert.True(game.Players.Where(p => { return p.Character.Alive; }).ToArray().Length == 5);
+
+            game.Time.AddOffset(new TimeSpan(0, 0, 10));
+            game.Timer();
+            Assert.True(game.State is DiscussionState);
+        }
+
+        [Fact]
+        public void TestDiscussionToNightTransitionState()
+        {
+            TestDeathAnnounceToDiscussionState();
+
+            game.Time.AddOffset(new TimeSpan(0, 0, 151));
+            game.Timer();
+
+
+            Assert.True(game.State is NightTransitionState);
+        }
+
+        [Fact]
+        public void TestDiscussionToTrialState()
+        {
+            TestDeathAnnounceToDiscussionState();
+
+            healer.VoteToKill(aww);
+            villager1.VoteToKill(aww);
+            villager2.VoteToKill(aww);
+
+            game.Time.AddOffset(new TimeSpan(0, 0, 60));
+            game.Timer();
+
+            Assert.True(game.State is TrialState);
+
+        }
+
+        [Fact]
+        public void TestTrialToVotingState()
+        {
+            TestDiscussionToTrialState();
+
+            game.Time.AddOffset(new TimeSpan(0, 0, 31));
+            game.Timer();
+
+            Assert.True(game.State is VotingState);
+
+        }
+
+        [Fact]
+        public void TestVotingToGuiltyVoteShowState()
+        {
+            TestTrialToVotingState();
+
+            healer.VoteGuilty();
+            villager1.VoteGuilty();
+            villager2.VoteGuilty();
+            ww.VoteInnocent();
+
+            game.Time.AddOffset(new TimeSpan(0, 0, 31));
+            game.Timer();
+
+            Assert.True(game.State is VoteShowState);
+
+        }
+
+        [Fact]
+        public void TestVotingToInnocentVoteShowState()
+        {
+            TestTrialToVotingState();
+
+            healer.VoteInnocent();
+            villager1.VoteInnocent();
+            villager2.VoteInnocent();
+            ww.VoteInnocent();
+
+            game.Time.AddOffset(new TimeSpan(0, 0, 31));
+            game.Timer();
+
+            Assert.True(game.State is VoteShowState);
+
+        }
+
+        [Fact]
+        public void TestVotingToDiscussionState()
+        {
+            TestVotingToInnocentVoteShowState();
+
+            game.Time.AddOffset(new TimeSpan(0, 0, 11));
+            game.Timer();
+
+            Assert.True(game.State is DiscussionState);
+
+        }
+
+        [Fact]
+        public void TestVotingToExecutionState()
+        {
+            TestVotingToGuiltyVoteShowState();
+
+            game.Time.AddOffset(new TimeSpan(0, 0, 11));
+            game.Timer();
+
+            Assert.True(game.State is ExecutionState);
+
+        }
+
+        [Fact]
+        public void TestExecutionToNightTransitionState()
+        {
+            TestVotingToExecutionState();
+
+            game.Time.AddOffset(new TimeSpan(0, 0, 31));
+            game.Timer();
+
+            Assert.True(game.State is NightTransitionState);
+
+        }
+
+        [Fact]
+        public void TestExecutionToGameOverState()
+        {
+            TestVotingToExecutionState();
+
+            ww.Character.Die();
+            game.Time.AddOffset(new TimeSpan(0, 0, 31));
+            game.Timer();
+
+            Assert.True(game.State is GameOverState);
+
+        }
+
+        [Fact]
+        public void TestGameOverToLobbyState()
+        {
+            TestExecutionToGameOverState();
+
+            game.Time.AddOffset(new TimeSpan(0, 0, 31));
+            game.Timer();
+
+            Assert.True(game.State is LobbyState);
+
+        }
 
     }
 }

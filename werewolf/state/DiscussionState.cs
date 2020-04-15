@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace WerewolfServer.Game
 {
-    class DiscussionState : TimedState // TODO: Vote to skip
+    public class DiscussionState : TimedState // TODO: Vote to skip
     {
         public override GameState NextGamestate => new NightTransitionState(Game);
         public DiscussionState(GameRoom game) : base(game, 2 * 60 + 30) { }
