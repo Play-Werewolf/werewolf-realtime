@@ -95,6 +95,19 @@ namespace WerewolfServer.Game
             _Updater?.SendStateUpdate(this);
         }
 
+        public void SendPlayerUpdate(IEnumerable<Player> players = null)
+        {
+            if (players == null)
+            {
+                players = Players;
+            }
+
+            foreach (var p in players)
+            {
+                _Updater.SendPlayerUpdate(p);
+            }
+        }
+
         public void AddPlayer(Player p)
         {
             if (!(State is LobbyState) && !(State is GameOverState))
@@ -109,6 +122,16 @@ namespace WerewolfServer.Game
 
             _Updater?.SendGameUpdate(this);
             _Updater?.SendStateUpdate(this, new[] { p }); // Send state to new player
+        }
+
+        public Player GetPlayer(string Id)
+        {
+            return Players.FirstOrDefault(x => x.Id == Id);
+        }
+
+        public bool IsAdmin(Player p) // KISS so this is a simple implementation. We might wish to change this later :/
+        {
+            return p == Players?[0];
         }
 
         public void PlayerReconnected(Player p)
@@ -134,6 +157,12 @@ namespace WerewolfServer.Game
             if (this.Players.Contains(player))
                 this.Players.Remove(player);
 
+            _Updater?.SendGameUpdate(this);
+        }
+
+        public void SetRolesList(string[] roles)
+        {
+            RolesBank = roles.Where(role => RoleGenerator_.Generators.ContainsKey(role)).ToList();
             _Updater?.SendGameUpdate(this);
         }
 

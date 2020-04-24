@@ -32,7 +32,7 @@ namespace WerewolfServer.Game
 
     public class RoleGenerator_
     {
-        public Dictionary<string, Generator> Generators { get; set; } = new Dictionary<string, Generator>
+        public static Dictionary<string, Generator> Generators { get; set; } = new Dictionary<string, Generator>
         {
             ["villager"]
                 = new Generator("Villager", DisplayColor.Green, typeof(Villager)),

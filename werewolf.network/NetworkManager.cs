@@ -88,11 +88,13 @@ namespace WerewolfServer.Network
 
                 if (DateTime.Now > nextTimer)
                 {
+                    DateTime timerStart = DateTime.Now;
                     nextTimer = DateTime.Now + delta;
                     foreach (var game in Rooms.Games.Values)
                     {
                         game.Timer();
                     }
+                    Console.WriteLine("Timer in {0}ms", (DateTime.Now - timerStart).TotalMilliseconds.ToString("F7"));
                 }
 
                 if (DateTime.Now > nextCleanup)

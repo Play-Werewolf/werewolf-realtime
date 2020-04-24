@@ -59,6 +59,10 @@ namespace WerewolfServer.Network
 
             RegisterCommand<ReadyCommand>();
             RegisterCommand<NotReadyCommand>();
+
+            RegisterCommand<VoteAgainstPlayerCommand>();
+            RegisterCommand<UnvotePlayerCommand>();
+            RegisterCommand<SetRolesCommand>();
         }
 
         public override string ToString()

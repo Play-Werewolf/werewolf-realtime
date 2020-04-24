@@ -22,6 +22,12 @@ namespace WerewolfServer.Game
     {
         public override GameState NextGamestate => new NightTransitionState(Game);
         public RolesLotState(GameRoom game) : base(game, 10) { }
+
+        public override void OnStart()
+        {
+            base.OnStart();
+            Game.SendPlayerUpdate();
+        }
     }
 
     public class NightTransitionState : TimedState

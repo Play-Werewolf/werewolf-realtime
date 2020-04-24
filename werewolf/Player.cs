@@ -90,6 +90,9 @@ namespace WerewolfServer.Game
 
         public void VoteToKill(Player p)
         {
+            if (!(Game?.State is DiscussionState))
+                return;
+
             if (!Character.Alive)
                 return;
 
@@ -104,10 +107,15 @@ namespace WerewolfServer.Game
             {
                 Game.PlayerOnStand = VotesAgainst;
             }
+
+            Game?.SendStateUpdate();
         }
 
         public void ResetVote()
         {
+            if (!(Game?.State is DiscussionState))
+                return;
+
             if (!Character.Alive)
                 return;
 
@@ -115,10 +123,14 @@ namespace WerewolfServer.Game
                 VotesAgainst.Votes--;
 
             VotesAgainst = null;
+
+            Game?.SendStateUpdate();
         }
 
         public void VoteGuilty()
         {
+            if (!(Game?.State is VotingState))
+                return;
             if (!Character.Alive)
                 return;
             TrialVote = true;
@@ -126,6 +138,8 @@ namespace WerewolfServer.Game
 
         public void VoteInnocent()
         {
+            if (!(Game?.State is VotingState))
+                return;
             if (!Character.Alive)
                 return;
             TrialVote = false;
@@ -133,6 +147,8 @@ namespace WerewolfServer.Game
 
         public void UndoTrialVote()
         {
+            if (!(Game?.State is VotingState))
+                return;
             if (!Character.Alive)
                 return;
             TrialVote = null;
