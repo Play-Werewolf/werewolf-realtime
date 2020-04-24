@@ -98,8 +98,7 @@ namespace WerewolfServer.Game
 
         // If this function returns true, then PreAction, DoAction and PostAction are called
         // (function is called separately 3 times to check for each of the ditto functions)
-        public virtual bool ShouldAct()
-        {
+        public virtual bool ShouldAct() {
             return Night.Action != null && Night.Action.ShouldAct;
         }
 

@@ -117,5 +117,16 @@ namespace WerewolfServer.Network
         {
             throw new NotImplementedException();
         }
+
+        public void SendMessage(Message message, IEnumerable<Player> targets = null)
+        {
+            if (targets == null)
+                return;
+
+            foreach (var player in targets)
+            {
+                player.Session?.EmitMessage(new NetworkMessage("message", new[] { message.Content }));
+            }
+        }
     }
 }

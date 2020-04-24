@@ -13,6 +13,7 @@ namespace WerewolfServer.Game
         void SendStateUpdate(GameRoom game, IEnumerable<Player> targets = null);
         void SendPlayerUpdate(Player player, IEnumerable<Player> targets = null);
         void SendTimerUpdate(float time, IEnumerable<Player> targets = null);
+        void SendMessage(Message message, IEnumerable<Player> targets = null);
     }
 
     public class GameRoom
@@ -182,15 +183,15 @@ namespace WerewolfServer.Game
         public void ProcessNight()
         {
             foreach (var p in Players.Prioritized())
-                if (p.Character.Night.Action.ShouldAct)
+                if (p.Character.ShouldAct())
                     p.Character.PreAction();
 
             foreach (var p in Players.Prioritized())
-                if (p.Character.Night.Action.ShouldAct)
+                if (p.Character.ShouldAct())
                     p.Character.DoAction();
 
             foreach (var p in Players.Prioritized())
-                if (p.Character.Night.Action.ShouldAct)
+                if (p.Character.ShouldAct())
                     p.Character.PostAction();
 
             foreach (var p in Players.Prioritized())

@@ -44,8 +44,6 @@ namespace WerewolfServer.Network
                 KillPlayer();
 
             AttachPlayer(CreatePlayer());
-
-            Console.WriteLine("Init player called. Player: " + Player);
         }
 
         public NetworkSession(NetworkConnection connection, LoginState state)

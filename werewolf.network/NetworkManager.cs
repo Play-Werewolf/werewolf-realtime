@@ -94,7 +94,7 @@ namespace WerewolfServer.Network
                     {
                         game.Timer();
                     }
-                    Console.WriteLine("Timer in {0}ms", (DateTime.Now - timerStart).TotalMilliseconds.ToString("F7"));
+                    // Console.WriteLine("Timer in {0}ms", (DateTime.Now - timerStart).TotalMilliseconds.ToString("F7"));
                 }
 
                 if (DateTime.Now > nextCleanup)

@@ -62,7 +62,12 @@ namespace WerewolfServer.Network
 
             RegisterCommand<VoteAgainstPlayerCommand>();
             RegisterCommand<UnvotePlayerCommand>();
+            RegisterCommand<VoteCommand>();
             RegisterCommand<SetRolesCommand>();
+
+            RegisterCommand<SetBooleanActionCommand>();
+            RegisterCommand<SetUnaryActionCommand>();
+            RegisterCommand<SetBinaryActionCommand>();
         }
 
         public override string ToString()
