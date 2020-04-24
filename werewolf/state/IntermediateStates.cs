@@ -129,5 +129,10 @@ namespace WerewolfServer.Game
         public override GameState NextGamestate => new LobbyState(Game);
 
         public GameOverState(GameRoom game) : base(game, 30) { }
+
+        public override void OnStart()
+        {
+            Game.SendGameUpdate();
+        }
     }
 }

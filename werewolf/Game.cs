@@ -96,6 +96,11 @@ namespace WerewolfServer.Game
             _Updater?.SendStateUpdate(this);
         }
 
+        public void SendGameUpdate()
+        {
+            _Updater?.SendGameUpdate(this);
+        }
+
         public void SendPlayerUpdate(IEnumerable<Player> players = null)
         {
             if (players == null)
@@ -121,7 +126,7 @@ namespace WerewolfServer.Game
             p.Game = this;
             this.Players.Add(p);
 
-            _Updater?.SendGameUpdate(this);
+            SendGameUpdate();
             _Updater?.SendStateUpdate(this, new[] { p }); // Send state to new player
         }
 
@@ -158,13 +163,13 @@ namespace WerewolfServer.Game
             if (this.Players.Contains(player))
                 this.Players.Remove(player);
 
-            _Updater?.SendGameUpdate(this);
+            SendGameUpdate();
         }
 
         public void SetRolesList(string[] roles)
         {
             RolesBank = roles.Where(role => RoleGenerator_.Generators.ContainsKey(role)).ToList();
-            _Updater?.SendGameUpdate(this);
+            SendGameUpdate();
         }
 
         public void StartNight()
