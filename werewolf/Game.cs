@@ -145,8 +145,9 @@ namespace WerewolfServer.Game
             if (!Players.Contains(p))
                 return;
 
-            _Updater?.SendGameUpdate(this, new[] { p });
             _Updater?.SendStateUpdate(this, new[] { p });
+            _Updater?.SendGameUpdate(this, new[] { p });
+            _Updater?.SendPlayerUpdate(p, new[] { p });
         }
 
         public void RemovePlayer(Player player)

@@ -77,6 +77,9 @@ namespace WerewolfServer.Game
                 State = GetType().Name,
                 Index = Index,
                 NightOrder = Game.NightPlayOrders[Index],
+                ActivePlayers = Game.Players
+                    .Where(p => p.Character.NightOrder == Game.NightPlayOrders[Index])
+                    .Select(p => p.Id),
             };
         }
     }

@@ -24,6 +24,7 @@ namespace WerewolfServer.Management
                     continue;
 
                 Games.Remove(key);
+                Console.WriteLine("Closed room {0}", key);
             }
         }
 

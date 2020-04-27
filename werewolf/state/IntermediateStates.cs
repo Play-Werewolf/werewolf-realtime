@@ -16,6 +16,14 @@ namespace WerewolfServer.Game
                 p.Result = GameResult.Unknown;
             }
         }
+
+        public override void OnEnd()
+        {
+            foreach (var p in Game.Players)
+            {
+                Game.SendPlayerUpdate(new[] { p });
+            }
+        }
     }
 
     public class RolesLotState : TimedState
