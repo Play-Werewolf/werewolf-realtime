@@ -40,6 +40,9 @@ namespace WerewolfServer.Network
 
             socket.OnClose = () =>
             {
+                if (conn == null)
+                    return;
+
                 conn.Disconnect();
                 if (Connections.Contains(conn))
                     Connections.Remove(conn);
