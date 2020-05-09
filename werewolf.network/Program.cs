@@ -10,7 +10,42 @@ namespace WerewolfServer.Network
         {
             manager = new NetworkManager();
             manager.Start();
+
+#if DEBUG
+            new System.Threading.Thread(DebugStuff)
+            {
+                IsBackground=true
+            }.Start();
+#endif
+
             manager.WorkSingleThreadedly();
+        }
+
+        static void DebugStuff()
+        {
+            while (true)
+            {
+                Console.Write("> ");
+                string nextCommand = Console.ReadLine();
+
+                foreach (var g in manager.Rooms.Games)
+                {
+                    Command(g.Value, nextCommand.Split(' '));
+                }
+            }
+        }
+
+        static void Command(Game.GameRoom g, string[] args)
+        {
+            switch (args[0])
+            {
+            case "a":
+                g.State = new Game.DeathAnnounceState(g)
+                {
+                    Callouts = new System.Collections.Generic.List<string> { "First callout", "Second callout", "Sukka blyat", "Third callout"}
+                };
+                break;
+            }
         }
 
         static void RenderAll()

@@ -85,6 +85,7 @@ namespace WerewolfServer.Game
             if (newState != State || State.RequestUpdate)
             {
                 State = newState;
+                Console.WriteLine("Emitting state update");
                 SendStateUpdate();
             }
 
@@ -217,7 +218,7 @@ namespace WerewolfServer.Game
 
             foreach (var p in Players)
             {
-                if (p.Character.DeathNight != CurrentNight)
+                if (p?.Character?.DeathNight != CurrentNight)
                     continue;
 
                 callouts.Add("We found " + p.Name + ", dead in their house tonight");

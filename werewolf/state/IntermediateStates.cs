@@ -89,9 +89,9 @@ namespace WerewolfServer.Game
 
     public class DeathAnnounceState : GameState
     {
-        List<string> Callouts;
-        string CurrentCall = null;
-        float Timer = -1;
+        public List<string> Callouts;
+        public string CurrentCall = null;
+        public float Timer = -1;
 
         public DeathAnnounceState(GameRoom game) : base(game)
         {
@@ -117,7 +117,8 @@ namespace WerewolfServer.Game
 
             CurrentCall = Callouts[0];
             Callouts.RemoveAt(0);
-            Timer = 0.5f * CurrentCall.Split(new char[] { ' ' }).Length;
+            Timer = 0.9f * CurrentCall.Split(new char[] { ' ' }).Length;
+            SendUpdate();
 
             Console.WriteLine(">>> " + CurrentCall);
         }

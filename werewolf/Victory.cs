@@ -20,7 +20,8 @@ namespace WerewolfServer.Game
 
         public static GameStats CreateFrom(GameRoom game)
         {
-            var livingPeople = game.Players.Select(p => p.Character).Where(p => p.Alive).ToList();
+            var players = game.Players.Where(p => p.Character != null);
+            var livingPeople = players.Select(p => p?.Character).Where(p => p.Alive).ToList();
             var townies = livingPeople.Where(c => c.Alignment == Alignment.Good).Count();
             var werewolves = livingPeople.Where(c => c.Alignment == Alignment.Evil).Count();
             var chaotics = livingPeople.Where(c => c.Alignment == Alignment.Chaos).Count();
